@@ -1,0 +1,22 @@
+name: Deploy UniGuide
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject API key and deploy
+        run: |
+          sed -i 's|REPLACE_WITH_YOUR_API_KEY|${{ secrets.ANTHROPIC_KEY }}|g' index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          exclude_assets: '.github'
