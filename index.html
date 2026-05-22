@@ -50,7 +50,7 @@
   .av.user { background: var(--bg3); color: var(--text2); }
   .bubble { padding: 9px 12px; font-size: 14px; line-height: 1.5; border-radius: var(--radius); }
   .msg.user .bubble { background: var(--brand-light); color: var(--brand); border-radius: var(--radius) 4px var(--radius) var(--radius); }
-  .msg.bot .bubble { background: var(--bg2); color: var(--text); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); }
+  .msg.bot .bubble { background: var(--bg2); color: var(--text); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); padding-bottom: 12px; }
 
   /* Stand card */
   .stand-card { margin-top: 9px; padding: 10px 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--brand-mid); background: var(--brand-light); }
@@ -59,10 +59,15 @@
   .stand-card-meta { font-size: 11px; color: var(--brand-dark); margin-top: 2px; }
 
   /* Chips / option buttons */
-  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-  .chip { padding: 7px 13px; border-radius: var(--radius-pill); border: 1.5px solid var(--brand); background: var(--bg); font-size: 13px; color: var(--brand); cursor: pointer; font-family: var(--font); font-weight: 500; transition: background 0.12s, color 0.12s; }
-  .chip:hover { background: var(--brand); color: #fff; }
-  .chip:active { background: var(--brand-dark); color: #fff; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { padding: 8px 15px; border-radius: var(--radius-pill); border: 1.5px solid var(--brand); background: transparent; font-size: 13px; color: var(--brand); cursor: pointer; font-family: var(--font); font-weight: 600; transition: background 0.15s, color 0.15s, transform 0.1s; line-height: 1.3; }
+  .chip:hover { background: var(--brand); color: #fff; transform: translateY(-1px); }
+  .chip:active { background: var(--brand-dark); color: #fff; transform: translateY(0); }
+  .chip:disabled { opacity: 0.4; cursor: default; transform: none; }
+  @media (prefers-color-scheme: dark) {
+    .chip { border-color: #7b8fd4; color: #a0aee0; }
+    .chip:hover { background: #4a5fa8; color: #fff; border-color: #4a5fa8; }
+  }
 
   /* Loading */
   .loading-bubble { padding: 11px 14px; background: var(--bg2); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
@@ -370,15 +375,18 @@ ${participantList}
 
 HOW TO BEHAVE:
 - NEVER greet the visitor again — the greeting was already shown before the conversation started.
-- When you need more info: ask ONE short question AND always add clickable answer options using this format on a separate line: <<<OPTIONS:["Option A","Option B","Option C"]>>> — NEVER ask a question without options. 3-5 options per question.
-- When you have enough info: give a short recommendation (2-4 sentences), use **bold** for institution names. No OPTIONS needed.
+- Ask MAXIMUM 2 clarifying questions before making a recommendation. Often 1 question is enough.
+- Do NOT ask about: language of instruction, nationality, age (unless relevant), GPA, test scores.
+- Focus only on: type of institution (already known from first message), field of study, level (bachelor/master/other).
+- When you need more info: ask ONE short question AND always add options: <<<OPTIONS:["Option A","Option B","Option C"]>>> on a separate line. NEVER ask without options.
+- When you have enough info (usually after 1-2 answers): give a recommendation (2-4 sentences), use **bold** for institution names. No OPTIONS needed.
 - Use web search only for specific up-to-date info about an institution.
 - ALWAYS reply in ${replyLang}.
-- End EVERY response on its own line with: <<<STAND:{"index":N}>>> (N = 1-${participants.length}, or 0 if still asking questions).
+- End EVERY response with: <<<STAND:{"index":N}>>> (N = 1-${participants.length}, or 0 if still asking).
 
-Example of a question response:
-What level of study are you looking for?
-<<<OPTIONS:["Bachelor's degree","Master's degree","Language course","High school"]>>>
+Example:
+What field interests you?
+<<<OPTIONS:["Business & Economics","IT & Engineering","Medicine & Sciences","Arts & Humanities","Undecided"]>>>
 <<<STAND:{"index":0}>>>
 
 Tone: warm, personal, like a knowledgeable friend.
