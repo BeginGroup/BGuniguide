@@ -33,8 +33,8 @@
   .app { display: flex; flex-direction: column; height: 100dvh; max-width: 600px; margin: 0 auto; }
   .header { flex-shrink: 0; padding: 14px 16px 12px; border-bottom: 0.5px solid var(--border); background: var(--bg); }
   .header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
-  .logo { width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--green-400); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .logo i { font-size: 18px; color: #fff; }
+  .logo-img { width: 80px; height: 34px; display: flex; align-items: center; flex-shrink: 0; } .logo-img img { width: 100%; height: 100%; object-fit: contain; }
+  
   .header-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
   .header-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
   .expo-bar { flex-shrink: 0; padding: 10px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
@@ -83,7 +83,7 @@
 <div class="app">
   <div class="header">
     <div class="header-row">
-      <div class="logo"><i class="ti ti-building-community"></i></div>
+      <div class="logo-img"><img src="https://www.begingroup.com/local/templates/begin_group/images/logo.png" alt="Begin Group" /></div>
       <div>
         <div class="header-title">UniGuide</div>
         <div class="header-sub" id="header-sub">Education Fair Assistant</div>
@@ -103,7 +103,7 @@
       <textarea id="input" rows="1" placeholder="Ask about programmes, admission, costs..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
     <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Send" disabled>
-      <i class="ti ti-arrow-up"></i>
+      <i class="ti ti-user"></i>
     </button>
   </div>
 </div>
@@ -366,7 +366,7 @@ function addMessage(role, html, standInfo) {
   av.innerHTML = role === 'bot' ? '🤖' : '👤';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  bubble.innerHTML = html;
+  bubble.innerHTML = renderMarkdown(html);
   if (standInfo) {
     const card = document.createElement('div');
     card.className = 'stand-card';
@@ -472,6 +472,12 @@ Tone: warm, friendly, no bureaucratic language.`;
   }
   isBusy = false;
   document.getElementById('send-btn').disabled = false;
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
 }
 
 loadParticipants();
