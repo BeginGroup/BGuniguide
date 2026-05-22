@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0F6E56">
+<meta name="theme-color" content="#273476">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>UniGuide — Education Fair Assistant</title>
+<link rel="icon" href="https://www.begingroup.com/local/templates/begin_group/favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --green-50: #E1F5EE; --green-100: #9FE1CB; --green-400: #1D9E75;
-    --green-600: #0F6E56;
+    --green-50: #DCDEE4; --green-100: #b0b5d0; --green-400: #273476;
+    --green-600: #1a2454;
     --bg: #FFFFFF; --bg2: #F5F5F3; --bg3: #EDEDE9;
     --text: #1A1A18; --text2: #6B6B67; --text3: #9E9E99;
     --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
@@ -24,8 +25,8 @@
       --bg: #151513; --bg2: #1E1E1B; --bg3: #252522;
       --text: #F0F0EC; --text2: #9E9E9A; --text3: #6B6B68;
       --border: rgba(255,255,255,0.09); --border2: rgba(255,255,255,0.15);
-      --green-50: #0A2A1E; --green-100: #0D3D2A;
-      --green-400: #1D9E75; --green-600: #25C490;
+      --green-50: #1e2340; --green-100: #2a3060; --user-bubble: #2a3060;
+      --green-400: #273476; --green-600: #6b7fc4;
     }
   }
   html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
@@ -52,7 +53,7 @@
   .av.bot { background: var(--green-50); color: var(--green-600); }
   .av.user { background: var(--bg3); color: var(--text2); }
   .bubble { padding: 9px 12px; font-size: 14px; line-height: 1.5; border-radius: var(--radius); }
-  .msg.user .bubble { background: var(--green-400); color: #fff; border-radius: var(--radius) 4px var(--radius) var(--radius); }
+  .msg.user .bubble { background: #DCDEE4; color: #273476; border-radius: var(--radius) 4px var(--radius) var(--radius); }
   .msg.bot .bubble { background: var(--bg2); color: var(--text); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); }
   .stand-card { margin-top: 9px; padding: 10px 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--green-100); background: var(--green-50); }
   .stand-card-label { font-size: 10px; color: var(--green-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
