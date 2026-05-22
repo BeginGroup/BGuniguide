@@ -4,15 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#273476">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>UniGuide — Education Fair Assistant</title>
 <link rel="icon" href="https://www.begingroup.com/local/templates/begin_group/favicon.ico">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --green-50: #DCDEE4; --green-100: #b0b5d0; --green-400: #273476;
-    --green-600: #1a2454;
+    --brand: #273476; --brand-dark: #1a2454; --brand-light: #DCDEE4; --brand-mid: #b0b5d0;
     --bg: #FFFFFF; --bg2: #F5F5F3; --bg3: #EDEDE9;
     --text: #1A1A18; --text2: #6B6B67; --text3: #9E9E99;
     --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
@@ -25,391 +24,294 @@
       --bg: #151513; --bg2: #1E1E1B; --bg3: #252522;
       --text: #F0F0EC; --text2: #9E9E9A; --text3: #6B6B68;
       --border: rgba(255,255,255,0.09); --border2: rgba(255,255,255,0.15);
-      --green-50: #1e2340; --green-100: #2a3060; --user-bubble: #2a3060;
-      --green-400: #273476; --green-600: #6b7fc4;
+      --brand: #4a5fa8; --brand-dark: #6b7fc4; --brand-light: #1e2340; --brand-mid: #2a3060;
     }
   }
   html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
   .app { display: flex; flex-direction: column; height: 100dvh; max-width: 600px; margin: 0 auto; }
-  .header { flex-shrink: 0; padding: 14px 16px 12px; border-bottom: 0.5px solid var(--border); background: var(--bg); }
-  .header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
-  .logo-img { width: 80px; height: 34px; display: flex; align-items: center; flex-shrink: 0; } .logo-img img { width: 100%; height: 100%; object-fit: contain; }
-  
-  .header-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
-  .header-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
-  .expo-bar { flex-shrink: 0; padding: 10px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
-  .expo-meta { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
-  
-  
-  
-  
-  
-  
+
+  /* Header */
+  .header { flex-shrink: 0; padding: 12px 16px 10px; border-bottom: 0.5px solid var(--border); background: var(--bg); display: flex; align-items: center; gap: 10px; }
+  .logo-img { height: 32px; width: auto; display: block; }
+  .header-divider { width: 1px; height: 24px; background: var(--border2); }
+  .header-text .title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .header-text .sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* Expo meta */
+  .expo-bar { flex-shrink: 0; padding: 8px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg2); font-size: 11px; color: var(--text2); }
+
+  /* Messages */
   .messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
   .msg { display: flex; gap: 7px; max-width: 92%; }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
   .msg.bot { align-self: flex-start; }
   .av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; margin-top: 2px; }
-  .av.bot { background: var(--green-50); color: var(--green-600); }
+  .av.bot { background: var(--brand-light); color: var(--brand); }
   .av.user { background: var(--bg3); color: var(--text2); }
   .bubble { padding: 9px 12px; font-size: 14px; line-height: 1.5; border-radius: var(--radius); }
-  .msg.user .bubble { background: #DCDEE4; color: #273476; border-radius: var(--radius) 4px var(--radius) var(--radius); }
+  .msg.user .bubble { background: var(--brand-light); color: var(--brand); border-radius: var(--radius) 4px var(--radius) var(--radius); }
   .msg.bot .bubble { background: var(--bg2); color: var(--text); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); }
-  .stand-card { margin-top: 9px; padding: 10px 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--green-100); background: var(--green-50); }
-  .stand-card-label { font-size: 10px; color: var(--green-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .stand-card-name { font-size: 13px; font-weight: 600; color: var(--green-600); }
-  .stand-card-meta { font-size: 11px; color: var(--green-400); margin-top: 2px; }
+
+  /* Stand card */
+  .stand-card { margin-top: 9px; padding: 10px 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--brand-mid); background: var(--brand-light); }
+  .stand-card-label { font-size: 10px; color: var(--brand); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stand-card-name { font-size: 13px; font-weight: 600; color: var(--brand); }
+  .stand-card-meta { font-size: 11px; color: var(--brand-dark); margin-top: 2px; }
+
+  /* Chips */
   .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
   .chip { padding: 6px 11px; border-radius: var(--radius-pill); border: 0.5px solid var(--border2); background: var(--bg); font-size: 12.5px; color: var(--text2); cursor: pointer; font-family: var(--font); }
   .chip:active { background: var(--bg3); }
+
+  /* Loading */
   .loading-bubble { padding: 11px 14px; background: var(--bg2); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
   .loading-bubble span { font-size: 12px; color: var(--text3); }
-  .dot-anim span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); animation: blink 1.2s infinite; }
+  .dot-anim span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--brand); animation: blink 1.2s infinite; }
   .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
   .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes blink { 0%,80%,100%{opacity:0.3;transform:scale(0.7)} 40%{opacity:1;transform:scale(1)} }
+
+  /* Input */
   .input-area { flex-shrink: 0; padding: 10px 12px calc(10px + var(--safe-bottom)); border-top: 0.5px solid var(--border); background: var(--bg); display: flex; gap: 8px; align-items: flex-end; }
   .input-wrap { flex: 1; }
   textarea { width: 100%; resize: none; border: 0.5px solid var(--border2); border-radius: 20px; padding: 9px 14px; font-size: 15px; font-family: var(--font); background: var(--bg2); color: var(--text); outline: none; min-height: 38px; max-height: 110px; line-height: 1.4; display: block; -webkit-appearance: none; }
   textarea::placeholder { color: var(--text3); }
-  textarea:focus { border-color: var(--green-400); }
-  .send-btn { height: 38px; padding: 0 14px; border-radius: 99px; background: var(--green-400); border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; -webkit-tap-highlight-color: transparent; font-family: var(--font); font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; }
-  .send-btn:active { transform: scale(0.93); background: var(--green-600); }
+  textarea:focus { border-color: var(--brand); }
+  .send-btn { height: 38px; padding: 0 14px; border-radius: var(--radius-pill); background: var(--brand); border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; -webkit-tap-highlight-color: transparent; font-family: var(--font); font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; }
+  .send-btn:active { background: var(--brand-dark); }
   .send-btn:disabled { opacity: 0.35; }
-  .send-btn i { font-size: 17px; color: #fff; }
+  .send-btn i { font-size: 15px; }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="header-row">
-      <div class="logo-img"><img src="https://www.begingroup.com/local/templates/begin_group/images/logo.png" alt="Begin Group" /></div>
-      <div>
-        <div class="header-title">UniGuide</div>
-        <div class="header-sub" id="header-sub">Education Fair Assistant</div>
-      </div>
+    <img class="logo-img" src="https://www.begingroup.com/local/templates/begin_group/images/logo.png" alt="Begin Group">
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <div class="title">UniGuide</div>
+      <div class="sub" id="header-sub">Education Fair Assistant</div>
     </div>
   </div>
-  <div class="expo-bar">
-    <div class="expo-meta" id="expo-meta">Loading fair data...</div>
-    </div>
-  </div>
+  <div class="expo-bar" id="expo-meta">Loading fair data...</div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
     <div class="input-wrap">
       <textarea id="input" rows="1" placeholder="Ask about programmes, admission, costs..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
-    <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Send" disabled>
-      <i class="ti ti-user" style="font-size:15px"></i><span id="send-label">Send</span>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
+      <i class="ti ti-user"></i><span id="send-label">Send</span>
     </button>
   </div>
 </div>
 
 <script>
-// ======================================================
 const API_KEY = "REPLACE_WITH_YOUR_API_KEY";
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSna_RrRUCMLh8p7mMRK4JBEcjJJ8MvO-aGEJ_lkWZJ_Y9Feo1zEtq986_Qk831bW5gTCIEOqFGQzBR/pub?gid=0&single=true&output=csv";
-// ======================================================
 
-let participants = [], expoInfo = {}, conversation = [];
-let isBusy = false, detectedLang = 'en';
-const browserLang = (navigator.language || 'en').toLowerCase().split('-')[0];
+let participants=[], expoInfo={}, conversation=[], isBusy=false, detectedLang='en';
+const browserLang=(navigator.language||'en').toLowerCase().split('-')[0];
 
-const i18n = {
-  en: {
-    sub: 'Education Fair Assistant', label: 'PARTICIPANTS',
-    loading: 'Loading fair data...', tag: 'loading...', err: 'Could not load fair data',
-    ph: 'Ask about programmes, admission, costs...', searching: 'searching...',
-    errReply: 'Could not get a response. Please check your internet connection.',
-    standLbl: '📍 Recommended stand',
-    chips: ["🎓 Bachelor's degree", "📚 Master's degree", "🔬 Sciences & Medicine", "💼 Business & Economics", "💻 IT & Engineering", "🎨 Arts & Humanities"],
-    queries: ["I'm looking for a Bachelor's programme", "I'm looking for a Master's programme", "I'm interested in sciences or medicine", "I'm interested in business or economics", "I'm interested in IT or engineering", "I'm interested in arts or humanities"],
-    sendLabel: 'Send', sendLabel: 'Отправить', sendLabel: 'Жіберу', sendLabel: 'Yuborish', sendLabel: 'Жөнөтүү', sendLabel: 'Göndər', sendLabel: 'გაგზავნა', sendLabel: 'Trimite', sendLabel: 'Kirim', sendLabel: 'إرسال', sendLabel: 'Gửi', sendLabel: 'भेजें', sendLabel: 'Senden', sendLabel: 'Invia', welcome: (n,u) => `Hello! Today's fair has ${n} participants, including ${u} universities from different countries. Ask me anything!`
-  },
-  ru: {
-    sub: 'Ассистент образовательной выставки', label: 'УЧАСТНИКИ',
-    loading: 'Загрузка данных...', tag: 'загрузка...', err: 'Не удалось загрузить данные',
-    ph: 'Спросите о специальностях, поступлении, стоимости...', searching: 'ищу информацию...',
-    errReply: 'Не удалось получить ответ. Проверьте подключение к интернету.',
-    standLbl: '📍 Рекомендуемый стенд',
-    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Науки и медицина", "💼 Бизнес и экономика", "💻 IT и инженерия", "🎨 Гуманитарные науки"],
-    queries: ["Ищу программу бакалавриата", "Ищу программу магистратуры", "Интересуют науки или медицина", "Интересует бизнес или экономика", "Интересует IT или инженерия", "Интересуют гуманитарные науки"],
-    welcome: (n,u) => `Привет! На выставке ${n} участников, из них ${u} университетов. Спрашивайте!`
-  },
-  kk: {
-    sub: 'Білім көрмесінің көмекшісі', label: 'ҚАТЫСУШЫЛАР',
-    loading: 'Деректер жүктелуде...', tag: 'жүктелуде...', err: 'Деректерді жүктеу мүмкін болмады',
-    ph: 'Мамандықтар, қабылдау туралы сұраңыз...', searching: 'іздеуде...',
-    errReply: 'Жауап алу мүмкін болмады.',
-    standLbl: '📍 Ұсынылатын стенд',
-    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Ғылым және медицина", "💼 Бизнес және экономика", "💻 IT және инженерия", "🎨 Гуманитарлық"],
-    queries: ["Бакалавриат бағдарламасын іздеймін", "Магистратура бағдарламасын іздеймін", "Ғылым немесе медицина қызықтырады", "Бизнес немесе экономика қызықтырады", "IT немесе инженерия қызықтырады", "Гуманитарлық бағыт қызықтырады"],
-    welcome: (n,u) => `Сәлем! Бүгін ${n} қатысушы, ${u} университет. Сұраңыз!`
-  },
-  uz: {
-    sub: 'Ta\'lim yarmarkasi yordamchisi', label: 'ISHTIROKCHILAR',
-    loading: 'Ma\'lumotlar yuklanmoqda...', tag: 'yuklanmoqda...', err: 'Ma\'lumotlarni yuklab bo\'lmadi',
-    ph: 'Mutaxassisliklar, qabul, narxlar haqida so\'rang...', searching: 'qidirmoqda...',
-    errReply: 'Javob olishning imkoni bo\'lmadi.',
-    standLbl: '📍 Tavsiya etilgan stend',
-    chips: ["🎓 Bakalavr", "📚 Magistratura", "🔬 Fan va tibbiyot", "💼 Biznes va iqtisodiyot", "💻 IT va muhandislik", "🎨 Gumanitar fanlar"],
-    queries: ["Bakalavr dasturini qidiraman", "Magistratura dasturini qidiraman", "Fan yoki tibbiyot qiziqtiradi", "Biznes yoki iqtisodiyot qiziqtiradi", "IT yoki muhandislik qiziqtiradi", "Gumanitar yo'nalish qiziqtiradi"],
-    welcome: (n,u) => `Salom! Bugungi yarmarkada ${n} ishtirokchi, shulardan ${u} ta universitet. Savol bering!`
-  },
-  ky: {
-    sub: 'Билим кѳргѳзмѳсүнүн жардамчысы', label: 'КАТЫШУУЧУЛАР',
-    loading: 'Маалыматтар жүктѳлүүдѳ...', tag: 'жүктѳлүүдѳ...', err: 'Маалыматтарды жүктѳѳ мүмкүн болгон жок',
-    ph: 'Адистиктер, кабыл алуу жөнүндө сураңыз...', searching: 'издеп жатат...',
-    errReply: 'Жооп алуу мүмкүн болгон жок.',
-    standLbl: '📍 Сунушталган стенд',
-    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Илим жана медицина", "💼 Бизнес жана экономика", "💻 IT жана инженерия", "🎨 Гуманитардык"],
-    queries: ["Бакалавриат программасын издеп жатам", "Магистратура программасын издеп жатам", "Илим же медицина кызыктырат", "Бизнес же экономика кызыктырат", "IT же инженерия кызыктырат", "Гуманитардык багыт кызыктырат"],
-    welcome: (n,u) => `Салам! Бүгүн ${n} катышуучу, ${u} университет. Суроолоруңузду бериңиз!`
-  },
-  az: {
-    sub: 'Təhsil sərgisi assistenti', label: 'İŞTİRAKÇILAR',
-    loading: 'Məlumatlar yüklənir...', tag: 'yüklənir...', err: 'Məlumatları yükləmək mümkün olmadı',
-    ph: 'İxtisaslar, qəbul, xərclər haqqında soruşun...', searching: 'axtarılır...',
-    errReply: 'Cavab almaq mümkün olmadı.',
-    standLbl: '📍 Tövsiyə olunan stend',
-    chips: ["🎓 Bakalavr", "📚 Magistratura", "🔬 Elm və tibb", "💼 Biznes və iqtisadiyyat", "💻 İT və mühəndislik", "🎨 Humanitar"],
-    queries: ["Bakalavr proqramı axtarıram", "Magistratura proqramı axtarıram", "Elm və ya tibb maraqlandırır", "Biznes və ya iqtisadiyyat maraqlandırır", "İT və ya mühəndislik maraqlandırır", "Humanitar istiqamət maraqlandırır"],
-    welcome: (n,u) => `Salam! Bu gün sərgi ${n} iştirakçı, ${u} universitet. Soruşun!`
-  },
-  ka: {
-    sub: 'საგანმანათლებლო გამოფენის ასისტენტი', label: 'მონაწილეები',
-    loading: 'მონაცემები იტვირთება...', tag: 'იტვირთება...', err: 'მონაცემების ჩატვირთვა ვერ მოხერხდა',
-    ph: 'სპეციალობები, მიღება, ღირებულება...', searching: 'ძიება...',
-    errReply: 'პასუხის მიღება ვერ მოხერხდა.',
-    standLbl: '📍 რეკომენდებული სტენდი',
-    chips: ["🎓 ბაკალავრიატი", "📚 მაგისტრატურა", "🔬 მეცნიერება და მედიცინა", "💼 ბიზნესი და ეკონომიკა", "💻 IT და ინჟინერია", "🎨 ჰუმანიტარული"],
-    queries: ["ვეძებ ბაკალავრის პროგრამას", "ვეძებ მაგისტრის პროგრამას", "მაინტერესებს მეცნიერება ან მედიცინა", "მაინტერესებს ბიზნესი ან ეკონომიკა", "მაინტერესებს IT ან ინჟინერია", "მაინტერესებს ჰუმანიტარული მიმართულება"],
-    welcome: (n,u) => `გამარჯობა! გამოფენაზე ${n} მონაწილე, ${u} უნივერსიტეტი. კითხვები დასვით!`
-  },
-  ro: {
-    sub: 'Asistentul târgului educațional', label: 'PARTICIPANȚI',
-    loading: 'Se încarcă datele...', tag: 'se încarcă...', err: 'Nu s-au putut încărca datele',
-    ph: 'Întrebați despre programe, admitere, costuri...', searching: 'se caută...',
-    errReply: 'Nu s-a putut obține un răspuns.',
-    standLbl: '📍 Stand recomandat',
-    chips: ["🎓 Licență", "📚 Master", "🔬 Științe și medicină", "💼 Business și economie", "💻 IT și inginerie", "🎨 Umaniste"],
-    queries: ["Caut un program de licență", "Caut un program de master", "Mă interesează științele sau medicina", "Mă interesează business sau economia", "Mă interesează IT sau ingineria", "Mă interesează științele umaniste"],
-    welcome: (n,u) => `Bună! Târgul de astăzi are ${n} participanți, inclusiv ${u} universități. Întrebați!`
-  },
-  id: {
-    sub: 'Asisten Pameran Pendidikan', label: 'PESERTA',
-    loading: 'Memuat data...', tag: 'memuat...', err: 'Gagal memuat data',
-    ph: 'Tanyakan tentang program, penerimaan, biaya...', searching: 'mencari...',
-    errReply: 'Tidak dapat memperoleh respons.',
-    standLbl: '📍 Stand yang direkomendasikan',
-    chips: ["🎓 Sarjana (S1)", "📚 Magister (S2)", "🔬 Sains & Kedokteran", "💼 Bisnis & Ekonomi", "💻 IT & Teknik", "🎨 Humaniora"],
-    queries: ["Saya mencari program sarjana", "Saya mencari program magister", "Saya tertarik sains atau kedokteran", "Saya tertarik bisnis atau ekonomi", "Saya tertarik IT atau teknik", "Saya tertarik humaniora"],
-    welcome: (n,u) => `Halo! Pameran hari ini memiliki ${n} peserta, termasuk ${u} universitas. Silakan bertanya!`
-  },
-  ar: {
-    sub: 'مساعد معرض التعليم', label: 'المشاركون',
-    loading: 'جار تحميل البيانات...', tag: 'جار التحميل...', err: 'تعذر تحميل البيانات',
-    ph: 'اسأل عن البرامج والقبول والتكاليف...', searching: 'جار البحث...',
-    errReply: 'تعذر الحصول على رد.',
-    standLbl: '📍 الجناح الموصى به',
-    chips: ["🎓 البكالوريوس", "📚 الماجستير", "🔬 العلوم والطب", "💼 الأعمال والاقتصاد", "💻 تكنولوجيا المعلومات والهندسة", "🎨 العلوم الإنسانية"],
-    queries: ["أبحث عن برنامج بكالوريوس", "أبحث عن برنامج ماجستير", "أنا مهتم بالعلوم أو الطب", "أنا مهتم بالأعمال أو الاقتصاد", "أنا مهتم بتكنولوجيا المعلومات أو الهندسة", "أنا مهتم بالعلوم الإنسانية"],
-    welcome: (n,u) => `مرحباً! يضم المعرض اليوم ${n} مشاركاً، منهم ${u} جامعة. اسأل أي سؤال!`
-  },
-  vi: {
-    sub: 'Trợ lý Hội chợ Giáo dục', label: 'NGƯỜI THAM GIA',
-    loading: 'Đang tải dữ liệu...', tag: 'đang tải...', err: 'Không thể tải dữ liệu',
-    ph: 'Hỏi về chương trình, tuyển sinh, học phí...', searching: 'đang tìm kiếm...',
-    errReply: 'Không thể nhận được phản hồi.',
-    standLbl: '📍 Gian hàng được đề xuất',
-    chips: ["🎓 Đại học", "📚 Thạc sĩ", "🔬 Khoa học & Y khoa", "💼 Kinh doanh & Kinh tế", "💻 IT & Kỹ thuật", "🎨 Nhân văn"],
-    queries: ["Tôi tìm chương trình đại học", "Tôi tìm chương trình thạc sĩ", "Tôi quan tâm khoa học hoặc y khoa", "Tôi quan tâm kinh doanh hoặc kinh tế", "Tôi quan tâm IT hoặc kỹ thuật", "Tôi quan tâm nhân văn"],
-    welcome: (n,u) => `Xin chào! Hội chợ hôm nay có ${n} người tham gia, gồm ${u} trường đại học. Hãy đặt câu hỏi!`
-  },
-  hi: {
-    sub: 'शिक्षा मेले का सहायक', label: 'प्रतिभागी',
-    loading: 'डेटा लोड हो रहा है...', tag: 'लोड हो रहा है...', err: 'डेटा लोड नहीं हो सका',
-    ph: 'कार्यक्रम, प्रवेश, खर्च के बारे में पूछें...', searching: 'खोज रहे हैं...',
-    errReply: 'उत्तर प्राप्त नहीं हो सका।',
-    standLbl: '📍 अनुशंसित स्टॉल',
-    chips: ["🎓 स्नातक", "📚 स्नातकोत्तर", "🔬 विज्ञान और चिकित्सा", "💼 व्यापार और अर्थशास्त्र", "💻 IT और इंजीनियरिंग", "🎨 मानविकी"],
-    queries: ["मैं स्नातक कार्यक्रम खोज रहा हूं", "मैं स्नातकोत्तर कार्यक्रम खोज रहा हूं", "मुझे विज्ञान या चिकित्सा में रुचि है", "मुझे व्यापार या अर्थशास्त्र में रुचि है", "मुझे IT या इंजीनियरिंग में रुचि है", "मुझे मानविकी में रुचि है"],
-    welcome: (n,u) => `नमस्ते! आज के मेले में ${n} प्रतिभागी हैं, जिनमें ${u} विश्वविद्यालय हैं। पूछें!`
-  },
-  de: {
-    sub: 'Assistent der Bildungsmesse', label: 'TEILNEHMER',
-    loading: 'Daten werden geladen...', tag: 'wird geladen...', err: 'Daten konnten nicht geladen werden',
-    ph: 'Fragen zu Studiengängen, Zulassung, Kosten...', searching: 'suche...',
-    errReply: 'Antwort konnte nicht abgerufen werden.',
-    standLbl: '📍 Empfohlener Stand',
-    chips: ["🎓 Bachelor", "📚 Master", "🔬 Naturwissenschaften & Medizin", "💼 Wirtschaft & BWL", "💻 IT & Ingenieurwesen", "🎨 Geisteswissenschaften"],
-    queries: ["Ich suche ein Bachelorprogramm", "Ich suche ein Masterprogramm", "Ich interessiere mich für Naturwissenschaften oder Medizin", "Ich interessiere mich für Wirtschaft", "Ich interessiere mich für IT oder Ingenieurwesen", "Ich interessiere mich für Geisteswissenschaften"],
-    welcome: (n,u) => `Hallo! Die heutige Messe hat ${n} Teilnehmer, darunter ${u} Universitäten. Fragen Sie!`
-  },
-  it: {
-    sub: 'Assistente della Fiera dell\'Istruzione', label: 'PARTECIPANTI',
-    loading: 'Caricamento dati...', tag: 'caricamento...', err: 'Impossibile caricare i dati',
-    ph: 'Chiedi di programmi, ammissione, costi...', searching: 'ricerca in corso...',
-    errReply: 'Impossibile ottenere una risposta.',
-    standLbl: '📍 Stand consigliato',
-    chips: ["🎓 Triennale", "📚 Magistrale", "🔬 Scienze e medicina", "💼 Economia e business", "💻 IT e ingegneria", "🎨 Umanistiche"],
-    queries: ["Cerco un corso triennale", "Cerco un corso magistrale", "Mi interessano le scienze o la medicina", "Mi interessa l'economia o il business", "Mi interessa l'informatica o l'ingegneria", "Mi interessano le discipline umanistiche"],
-    welcome: (n,u) => `Ciao! La fiera di oggi ha ${n} partecipanti, tra cui ${u} università. Chiedi pure!`
-  }
+const sendLabels={en:'Send',ru:'Отправить',kk:'Жіберу',uz:'Yuborish',ky:'Жөнөтүү',az:'Göndər',ka:'გაგზავნა',ro:'Trimite',id:'Kirim',ar:'إرسال',vi:'Gửi',hi:'भेजें',de:'Senden',it:'Invia'};
+
+const i18n={
+  en:{sub:'Education Fair Assistant',loading:'Loading fair data...',err:'Could not load data',ph:'Ask about programmes, admission, costs...',searching:'searching...',errReply:'Could not get a response.',standLbl:'📍 Recommended stand',
+    chips:["🎓 Bachelor's degree","📚 Master's degree","🔬 Sciences & Medicine","💼 Business & Economics","💻 IT & Engineering","🎨 Arts & Humanities"],
+    queries:["I'm looking for a Bachelor's programme","I'm looking for a Master's programme","I'm interested in sciences or medicine","I'm interested in business or economics","I'm interested in IT or engineering","I'm interested in arts or humanities"],
+    welcome:(n,u)=>`Hello! Today's fair has ${n} participants, including ${u} universities. What are you looking for?`},
+  ru:{sub:'Ассистент образовательной выставки',loading:'Загрузка данных...',err:'Не удалось загрузить данные',ph:'Спросите о специальностях, поступлении...',searching:'ищу информацию...',errReply:'Не удалось получить ответ.',standLbl:'📍 Рекомендуемый стенд',
+    chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Науки и медицина","💼 Бизнес и экономика","💻 IT и инженерия","🎨 Гуманитарные науки"],
+    queries:["Ищу программу бакалавриата","Ищу программу магистратуры","Интересуют науки или медицина","Интересует бизнес или экономика","Интересует IT или инженерия","Интересуют гуманитарные науки"],
+    welcome:(n,u)=>`Привет! На выставке ${n} участников, из них ${u} университетов. Что вас интересует?`},
+  kk:{sub:'Білім көрмесінің көмекшісі',loading:'Деректер жүктелуде...',err:'Деректерді жүктеу мүмкін болмады',ph:'Мамандықтар туралы сұраңыз...',searching:'іздеуде...',errReply:'Жауап алу мүмкін болмады.',standLbl:'📍 Ұсынылатын стенд',
+    chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Ғылым және медицина","💼 Бизнес және экономика","💻 IT және инженерия","🎨 Гуманитарлық"],
+    queries:["Бакалавриат бағдарламасын іздеймін","Магистратура бағдарламасын іздеймін","Ғылым немесе медицина қызықтырады","Бизнес немесе экономика қызықтырады","IT немесе инженерия қызықтырады","Гуманитарлық бағыт қызықтырады"],
+    welcome:(n,u)=>`Сәлем! Бүгін ${n} қатысушы, ${u} университет. Не іздеп жүрсіз?`},
+  uz:{sub:"Ta'lim yarmarkasi yordamchisi",loading:"Ma'lumotlar yuklanmoqda...",err:"Ma'lumotlarni yuklab bo'lmadi",ph:"Mutaxassisliklar haqida so'rang...",searching:'qidirmoqda...',errReply:"Javob olishning imkoni bo'lmadi.",standLbl:'📍 Tavsiya etilgan stend',
+    chips:["🎓 Bakalavr","📚 Magistratura","🔬 Fan va tibbiyot","💼 Biznes va iqtisodiyot","💻 IT va muhandislik","🎨 Gumanitar"],
+    queries:["Bakalavr dasturini qidiraman","Magistratura dasturini qidiraman","Fan yoki tibbiyot qiziqtiradi","Biznes yoki iqtisodiyot qiziqtiradi","IT yoki muhandislik qiziqtiradi","Gumanitar yo'nalish qiziqtiradi"],
+    welcome:(n,u)=>`Salom! Bugun ${n} ishtirokchi, ${u} universitet. Nima qidiryapsiz?`},
+  ky:{sub:'Билим кѳргѳзмѳсүнүн жардамчысы',loading:'Маалыматтар жүктѳлүүдѳ...',err:'Маалыматтарды жүктѳѳ мүмкүн болгон жок',ph:'Адистиктер жөнүндө сураңыз...',searching:'издеп жатат...',errReply:'Жооп алуу мүмкүн болгон жок.',standLbl:'📍 Сунушталган стенд',
+    chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Илим жана медицина","💼 Бизнес жана экономика","💻 IT жана инженерия","🎨 Гуманитардык"],
+    queries:["Бакалавриат программасын издеп жатам","Магистратура программасын издеп жатам","Илим же медицина кызыктырат","Бизнес же экономика кызыктырат","IT же инженерия кызыктырат","Гуманитардык багыт кызыктырат"],
+    welcome:(n,u)=>`Салам! Бүгүн ${n} катышуучу, ${u} университет. Эмнени издеп жатасыз?`},
+  az:{sub:'Təhsil sərgisi assistenti',loading:'Məlumatlar yüklənir...',err:'Məlumatları yükləmək mümkün olmadı',ph:'İxtisaslar haqqında soruşun...',searching:'axtarılır...',errReply:'Cavab almaq mümkün olmadı.',standLbl:'📍 Tövsiyə olunan stend',
+    chips:["🎓 Bakalavr","📚 Magistratura","🔬 Elm və tibb","💼 Biznes və iqtisadiyyat","💻 İT və mühəndislik","🎨 Humanitar"],
+    queries:["Bakalavr proqramı axtarıram","Magistratura proqramı axtarıram","Elm və ya tibb maraqlandırır","Biznes və ya iqtisadiyyat maraqlandırır","İT və ya mühəndislik maraqlandırır","Humanitar istiqamət maraqlandırır"],
+    welcome:(n,u)=>`Salam! Bu gün ${n} iştirakçı, ${u} universitet. Nə axtarırsınız?`},
+  ka:{sub:'საგანმანათლებლო გამოფენის ასისტენტი',loading:'მონაცემები იტვირთება...',err:'მონაცემების ჩატვირთვა ვერ მოხერხდა',ph:'სპეციალობები, მიღება...',searching:'ძიება...',errReply:'პასუხის მიღება ვერ მოხერხდა.',standLbl:'📍 რეკომენდებული სტენდი',
+    chips:["🎓 ბაკალავრიატი","📚 მაგისტრატურა","🔬 მეცნიერება და მედიცინა","💼 ბიზნესი და ეკონომიკა","💻 IT და ინჟინერია","🎨 ჰუმანიტარული"],
+    queries:["ვეძებ ბაკალავრის პროგრამას","ვეძებ მაგისტრის პროგრამას","მაინტერესებს მეცნიერება ან მედიცინა","მაინტერესებს ბიზნესი ან ეკონომიკა","მაინტერესებს IT ან ინჟინერია","მაინტერესებს ჰუმანიტარული მიმართულება"],
+    welcome:(n,u)=>`გამარჯობა! დღეს ${n} მონაწილე, ${u} უნივერსიტეტი. რას ეძებთ?`},
+  ro:{sub:'Asistentul târgului educațional',loading:'Se încarcă datele...',err:'Nu s-au putut încărca datele',ph:'Întrebați despre programe, admitere...',searching:'se caută...',errReply:'Nu s-a putut obține un răspuns.',standLbl:'📍 Stand recomandat',
+    chips:["🎓 Licență","📚 Master","🔬 Științe și medicină","💼 Economie și business","💻 IT și inginerie","🎨 Umanistice"],
+    queries:["Caut un program de licență","Caut un program de master","Mă interesează științele sau medicina","Mă interesează business sau economia","Mă interesează IT sau ingineria","Mă interesează științele umaniste"],
+    welcome:(n,u)=>`Bună! ${n} participanți azi, inclusiv ${u} universități. Ce căutați?`},
+  id:{sub:'Asisten Pameran Pendidikan',loading:'Memuat data...',err:'Gagal memuat data',ph:'Tanyakan tentang program, penerimaan...',searching:'mencari...',errReply:'Tidak dapat memperoleh respons.',standLbl:'📍 Stand yang direkomendasikan',
+    chips:["🎓 Sarjana (S1)","📚 Magister (S2)","🔬 Sains & Kedokteran","💼 Bisnis & Ekonomi","💻 IT & Teknik","🎨 Humaniora"],
+    queries:["Saya mencari program sarjana","Saya mencari program magister","Saya tertarik sains atau kedokteran","Saya tertarik bisnis atau ekonomi","Saya tertarik IT atau teknik","Saya tertarik humaniora"],
+    welcome:(n,u)=>`Halo! ${n} peserta hari ini, termasuk ${u} universitas. Apa yang Anda cari?`},
+  ar:{sub:'مساعد معرض التعليم',loading:'جار تحميل البيانات...',err:'تعذر تحميل البيانات',ph:'اسأل عن البرامج والقبول...',searching:'جار البحث...',errReply:'تعذر الحصول على رد.',standLbl:'📍 الجناح الموصى به',
+    chips:["🎓 البكالوريوس","📚 الماجستير","🔬 العلوم والطب","💼 الأعمال والاقتصاد","💻 تكنولوجيا المعلومات والهندسة","🎨 العلوم الإنسانية"],
+    queries:["أبحث عن برنامج بكالوريوس","أبحث عن برنامج ماجستير","أنا مهتم بالعلوم أو الطب","أنا مهتم بالأعمال أو الاقتصاد","أنا مهتم بتكنولوجيا المعلومات","أنا مهتم بالعلوم الإنسانية"],
+    welcome:(n,u)=>`مرحباً! ${n} مشاركاً اليوم، منهم ${u} جامعة. ماذا تبحث عن؟`},
+  vi:{sub:'Trợ lý Hội chợ Giáo dục',loading:'Đang tải dữ liệu...',err:'Không thể tải dữ liệu',ph:'Hỏi về chương trình, tuyển sinh...',searching:'đang tìm kiếm...',errReply:'Không thể nhận được phản hồi.',standLbl:'📍 Gian hàng được đề xuất',
+    chips:["🎓 Đại học","📚 Thạc sĩ","🔬 Khoa học & Y khoa","💼 Kinh doanh & Kinh tế","💻 CNTT & Kỹ thuật","🎨 Nhân văn"],
+    queries:["Tôi tìm chương trình đại học","Tôi tìm chương trình thạc sĩ","Tôi quan tâm khoa học hoặc y khoa","Tôi quan tâm kinh doanh hoặc kinh tế","Tôi quan tâm CNTT hoặc kỹ thuật","Tôi quan tâm nhân văn"],
+    welcome:(n,u)=>`Xin chào! ${n} người tham gia hôm nay, gồm ${u} trường đại học. Bạn tìm gì?`},
+  hi:{sub:'शिक्षा मेले का सहायक',loading:'डेटा लोड हो रहा है...',err:'डेटा लोड नहीं हो सका',ph:'कार्यक्रम, प्रवेश के बारे में पूछें...',searching:'खोज रहे हैं...',errReply:'उत्तर प्राप्त नहीं हो सका।',standLbl:'📍 अनुशंसित स्टॉल',
+    chips:["🎓 स्नातक","📚 स्नातकोत्तर","🔬 विज्ञान और चिकित्सा","💼 व्यापार और अर्थशास्त्र","💻 IT और इंजीनियरिंग","🎨 मानविकी"],
+    queries:["मैं स्नातक कार्यक्रम खोज रहा हूं","मैं स्नातकोत्तर कार्यक्रम खोज रहा हूं","मुझे विज्ञान या चिकित्सा में रुचि है","मुझे व्यापार में रुचि है","मुझे IT में रुचि है","मुझे मानविकी में रुचि है"],
+    welcome:(n,u)=>`नमस्ते! आज ${n} प्रतिभागी, ${u} विश्वविद्यालय। आप क्या ढूंढ रहे हैं?`},
+  de:{sub:'Assistent der Bildungsmesse',loading:'Daten werden geladen...',err:'Daten konnten nicht geladen werden',ph:'Fragen zu Studiengängen, Zulassung...',searching:'suche...',errReply:'Antwort konnte nicht abgerufen werden.',standLbl:'📍 Empfohlener Stand',
+    chips:["🎓 Bachelor","📚 Master","🔬 Naturwissenschaften & Medizin","💼 Wirtschaft & BWL","💻 IT & Ingenieurwesen","🎨 Geisteswissenschaften"],
+    queries:["Ich suche ein Bachelorprogramm","Ich suche ein Masterprogramm","Ich interessiere mich für Naturwissenschaften","Ich interessiere mich für Wirtschaft","Ich interessiere mich für IT","Ich interessiere mich für Geisteswissenschaften"],
+    welcome:(n,u)=>`Hallo! ${n} Teilnehmer heute, davon ${u} Universitäten. Was suchen Sie?`},
+  it:{sub:"Assistente della Fiera dell'Istruzione",loading:'Caricamento dati...',err:'Impossibile caricare i dati',ph:'Chiedi di programmi, ammissione...',searching:'ricerca...',errReply:'Impossibile ottenere una risposta.',standLbl:'📍 Stand consigliato',
+    chips:["🎓 Triennale","📚 Magistrale","🔬 Scienze e medicina","💼 Economia e business","💻 IT e ingegneria","🎨 Umanistiche"],
+    queries:["Cerco un corso triennale","Cerco un corso magistrale","Mi interessano le scienze o la medicina","Mi interessa l'economia","Mi interessa l'informatica","Mi interessano le discipline umanistiche"],
+    welcome:(n,u)=>`Ciao! ${n} partecipanti oggi, tra cui ${u} università. Cosa stai cercando?`}
 };
 
-// Script-based language detection for non-Latin scripts
-const scriptDetectors = [
-  { lang: 'ru', re: /[а-яёА-ЯЁ]/, threshold: 3 },
-  { lang: 'kk', re: /[әіңғүұқөһӘІҢҒҮҰҚӨҺ]/, threshold: 1 },
-  { lang: 'ky', re: /[өүңӊ]/, threshold: 1 },
-  { lang: 'ka', re: /[\u10D0-\u10FF]/, threshold: 1 },
-  { lang: 'ar', re: /[\u0600-\u06FF]/, threshold: 2 },
-  { lang: 'hi', re: /[\u0900-\u097F]/, threshold: 2 },
-  { lang: 'vi', re: /[àáâãèéêìíòóôõùúýăđơư]/i, threshold: 2 },
+const scriptDetectors=[
+  {lang:'kk',re:/[әіңғүұқөһӘІҢҒҮҰҚӨҺ]/,th:1},
+  {lang:'ky',re:/[өүңӊ]/,th:1},
+  {lang:'ru',re:/[а-яёА-ЯЁ]/,th:3},
+  {lang:'ka',re:/[\u10D0-\u10FF]/,th:1},
+  {lang:'ar',re:/[\u0600-\u06FF]/,th:2},
+  {lang:'hi',re:/[\u0900-\u097F]/,th:2},
+  {lang:'vi',re:/[àáâãèéêìíòóôõùúýăđơư]/i,th:2},
 ];
 
-function detectLangFromText(text) {
-  for (const d of scriptDetectors) {
-    if ((text.match(d.re) || []).length >= d.threshold) return d.lang;
-  }
-  return null; // Latin — keep current or use browser lang
+function t(){return i18n[detectedLang]||i18n.en;}
+
+function applyLanguage(lang){
+  if(!i18n[lang])lang='en';
+  detectedLang=lang;
+  document.getElementById('header-sub').textContent=t().sub;
+  const inp=document.getElementById('input');
+  if(inp)inp.placeholder=t().ph;
+  const lbl=document.getElementById('send-label');
+  if(lbl)lbl.textContent=sendLabels[lang]||'Send';
 }
 
-function t() { return i18n[detectedLang] || i18n.en; }
-
-function applyLanguage(lang) {
-  if (!i18n[lang]) lang = 'en';
-  detectedLang = lang;
-  document.getElementById('header-sub').textContent = t().sub;
-  
-  const inp = document.getElementById('input');
-  if (inp) inp.placeholder = t().ph;
+function detectLangFromText(text){
+  for(const d of scriptDetectors)
+    if((text.match(d.re)||[]).length>=d.th)return d.lang;
+  return null;
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-  return lines.slice(1).map(line => {
-    const vals = []; let cur = '', inQ = false;
-    for (let ch of line) {
-      if (ch === '"') inQ = !inQ;
-      else if (ch === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
-      else cur += ch;
+function parseCSV(text){
+  const lines=text.trim().split('\n');
+  const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line=>{
+    const vals=[];let cur='',inQ=false;
+    for(let ch of line){
+      if(ch==='"')inQ=!inQ;
+      else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}
+      else cur+=ch;
     }
     vals.push(cur.trim());
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = (vals[i]||'').replace(/^"|"$/g,''));
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
     return obj;
   });
 }
 
-async function loadParticipants() {
-  try {
-    const resp = await fetch(CSV_URL);
-    const text = await resp.text();
-    const rows = parseCSV(text);
-    participants = rows.map(r => ({
-      type: r['Type']||'', name: r['Name']||'', country: r['Country']||'',
-      date: r['Date']||'', place: r['Place']||'', time: r['Time']||'', stand: r['Stand']||''
-    })).filter(p => p.name);
-    if (participants.length > 0) {
-      expoInfo = { date: participants[0].date, place: participants[0].place.trim(), time: participants[0].time };
-    }
-    const initLang = i18n[browserLang] ? browserLang : 'en';
+async function loadParticipants(){
+  try{
+    const resp=await fetch(CSV_URL);
+    const text=await resp.text();
+    const rows=parseCSV(text);
+    participants=rows.map(r=>({
+      type:r['Type']||'',name:r['Name']||'',country:r['Country']||'',
+      date:r['Date']||'',place:r['Place']||'',time:r['Time']||'',stand:r['Stand']||''
+    })).filter(p=>p.name);
+    if(participants.length>0)
+      expoInfo={date:participants[0].date,place:participants[0].place.trim(),time:participants[0].time};
+    const initLang=i18n[browserLang]?browserLang:'en';
     applyLanguage(initLang);
-    renderExpoBar();
-    enableChat();
+    document.getElementById('expo-meta').textContent=
+      `📅 ${expoInfo.date} · ⏰ ${expoInfo.time} · 📍 ${expoInfo.place}`;
+    document.getElementById('input').disabled=false;
+    document.getElementById('send-btn').disabled=false;
     showWelcome();
-  } catch(e) {
-    document.getElementById('expo-meta').textContent = t().err;
-    
+  }catch(e){
+    document.getElementById('expo-meta').textContent=t().err;
   }
 }
 
-);
+function renderMarkdown(text){
+  return text
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>');
 }
 
-function enableChat() {
-  document.getElementById('input').disabled = false;
-  document.getElementById('send-btn').disabled = false;
-}
-
-function showWelcome() {
-  const uniCount = participants.filter(p => p.type === 'Universities').length;
-  const l = t();
-  const chipsHtml = l.chips.map((c,i) =>
+function showWelcome(){
+  const uniCount=participants.filter(p=>p.type==='Universities').length;
+  const l=t();
+  const chipsHtml=l.chips.map((c,i)=>
     `<div class="chip" onclick="quickAsk('${l.queries[i].replace(/'/g,"\\'")}')">${c}</div>`
   ).join('');
-  addMessage('bot', `${l.welcome(participants.length, uniCount)}<div class="chips">${chipsHtml}</div>`);
+  addMessage('bot',`${l.welcome(participants.length,uniCount)}<div class="chips">${chipsHtml}</div>`);
 }
 
-function addMessage(role, html, standInfo) {
-  const msgs = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = `msg ${role}`;
-  const av = document.createElement('div');
-  av.className = `av ${role}`;
-  av.innerHTML = role === 'bot' ? '🤖' : '👤';
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
-  bubble.innerHTML = renderMarkdown(html);
-  if (standInfo) {
-    const card = document.createElement('div');
-    card.className = 'stand-card';
-    card.innerHTML = `<div class="stand-card-label">${t().standLbl}</div>
+function addMessage(role,html,standInfo){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className=`msg ${role}`;
+  const av=document.createElement('div');
+  av.className=`av ${role}`;
+  av.innerHTML=role==='bot'?'🤖':'👤';
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.innerHTML=renderMarkdown(html);
+  if(standInfo){
+    const card=document.createElement('div');
+    card.className='stand-card';
+    card.innerHTML=`<div class="stand-card-label">${t().standLbl}</div>
       <div class="stand-card-name">${standInfo.name}</div>
-      <div class="stand-card-meta">${standInfo.country ? standInfo.country + ' · ' : ''}Stand ${standInfo.stand}</div>`;
+      <div class="stand-card-meta">${standInfo.country?standInfo.country+' · ':''}Stand ${standInfo.stand}</div>`;
     bubble.appendChild(card);
   }
-  wrap.appendChild(av); wrap.appendChild(bubble);
+  wrap.appendChild(av);wrap.appendChild(bubble);
   msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
 }
 
-function addLoadingMsg() {
-  const msgs = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg bot'; wrap.id = 'loading-msg';
-  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div><span>${t().searching}</span></div>`;
-  msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
+function addLoadingMsg(){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className='msg bot';wrap.id='loading-msg';
+  wrap.innerHTML=`<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div><span>${t().searching}</span></div>`;
+  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
 }
-function removeLoadingMsg() { const el = document.getElementById('loading-msg'); if(el) el.remove(); }
-function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
-function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
-function quickAsk(text) { document.getElementById('input').value=text; sendMessage(); }
+function removeLoadingMsg(){const el=document.getElementById('loading-msg');if(el)el.remove();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function quickAsk(text){document.getElementById('input').value=text;sendMessage();}
 
-const langNames = {
-  en:'English',ru:'Russian',kk:'Kazakh',uz:'Uzbek',ky:'Kyrgyz',
-  az:'Azerbaijani',ka:'Georgian',ro:'Romanian',id:'Indonesian',
-  ar:'Arabic',vi:'Vietnamese',hi:'Hindi',de:'German',it:'Italian'
-};
+const langNames={en:'English',ru:'Russian',kk:'Kazakh',uz:'Uzbek',ky:'Kyrgyz',az:'Azerbaijani',ka:'Georgian',ro:'Romanian',id:'Indonesian',ar:'Arabic',vi:'Vietnamese',hi:'Hindi',de:'German',it:'Italian'};
 
-async function sendMessage() {
-  if (isBusy || !participants.length) return;
-  const input = document.getElementById('input');
-  const text = input.value.trim();
-  if (!text) return;
-
-  // Auto-detect language from user input
-  const detected = detectLangFromText(text);
-  if (detected && detected !== detectedLang) applyLanguage(detected);
-
-  input.value = ''; input.style.height = 'auto';
-  addMessage('user', text);
-  conversation.push({ role:'user', content:text });
-  isBusy = true;
-  document.getElementById('send-btn').disabled = true;
+async function sendMessage(){
+  if(isBusy||!participants.length)return;
+  const input=document.getElementById('input');
+  const text=input.value.trim();
+  if(!text)return;
+  const detected=detectLangFromText(text);
+  if(detected&&detected!==detectedLang)applyLanguage(detected);
+  input.value='';input.style.height='auto';
+  addMessage('user',text);
+  conversation.push({role:'user',content:text});
+  isBusy=true;document.getElementById('send-btn').disabled=true;
   addLoadingMsg();
 
-  const participantList = participants.map((p,i) =>
+  const participantList=participants.map((p,i)=>
     `${i+1}. [${p.type}] ${p.name}${p.country?' ('+p.country+')':''} — Stand ${p.stand}`
   ).join('\n');
+  const replyLang=langNames[detectedLang]||'English';
 
-  const replyLang = langNames[detectedLang] || 'English';
-
-  const systemPrompt = `You are a friendly assistant-navigator at an international education fair.
+  const systemPrompt=`You are a friendly assistant-navigator at an international education fair.
 
 FAIR: ${expoInfo.place}
 DATE: ${expoInfo.date}, ${expoInfo.time}
@@ -419,52 +321,33 @@ ${participantList}
 
 Rules:
 1. ALWAYS reply in ${replyLang}.
-2. Give a short helpful answer (2-4 sentences).
+2. Short helpful answer (2-4 sentences). Use **bold** for university names.
 3. Use web search if you need fresh info about a university.
-4. Consider participant types: Universities, Study Abroad Agencies, Private Schools, Language Tests, Internship Agency.
-5. Always end with: <<<STAND:{"index":N}>>> where N = participant number (1-${participants.length}), or 0 if unclear.
+4. Consider types: Universities, Study Abroad Agencies, Private Schools, Language Tests, Internship Agency.
+5. End with: <<<STAND:{"index":N}>>> where N = participant number (1-${participants.length}), or 0 if unclear.
 
-Tone: warm, friendly, no bureaucratic language.`;
+Tone: warm, friendly.`;
 
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-5',
-        max_tokens:1000,
-        system: systemPrompt,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages: conversation
-      })
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:systemPrompt,tools:[{type:'web_search_20250305',name:'web_search'}],messages:conversation})
     });
-    const data = await resp.json();
-    let fullText = '';
-    if (data.content) for (const b of data.content) if (b.type==='text') fullText += b.text;
+    const data=await resp.json();
+    let fullText='';
+    if(data.content)for(const b of data.content)if(b.type==='text')fullText+=b.text;
     removeLoadingMsg();
-    const m = fullText.match(/<<<STAND:\{"index":(\d+)\}>>>/);
-    let standInfo = null;
-    if (m) { const idx=parseInt(m[1])-1; if(idx>=0&&idx<participants.length) standInfo=participants[idx]; }
-    const display = fullText.replace(/<<<STAND:.*?>>>/g,'').trim().replace(/\n/g,'<br>');
-    addMessage('bot', display, standInfo);
-    conversation.push({ role:'assistant', content:fullText });
-  } catch(err) {
-    removeLoadingMsg();
-    addMessage('bot', t().errReply);
+    const m=fullText.match(/<<<STAND:\{"index":(\d+)\}>>>/);
+    let standInfo=null;
+    if(m){const idx=parseInt(m[1])-1;if(idx>=0&&idx<participants.length)standInfo=participants[idx];}
+    const display=fullText.replace(/<<<STAND:.*?>>>/g,'').trim().replace(/\n/g,'<br>');
+    addMessage('bot',display,standInfo);
+    conversation.push({role:'assistant',content:fullText});
+  }catch(err){
+    removeLoadingMsg();addMessage('bot',t().errReply);
   }
-  isBusy = false;
-  document.getElementById('send-btn').disabled = false;
-}
-
-function renderMarkdown(text) {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+  isBusy=false;document.getElementById('send-btn').disabled=false;
 }
 
 loadParticipants();
