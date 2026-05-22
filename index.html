@@ -116,61 +116,75 @@ const browserLang=(navigator.language||'en').toLowerCase().split('-')[0];
 const sendLabels={en:'Send',ru:'Отправить',kk:'Жіберу',uz:'Yuborish',ky:'Жөнөтүү',az:'Göndər',ka:'გაგზავნა',ro:'Trimite',id:'Kirim',ar:'إرسال',vi:'Gửi',hi:'भेजें',de:'Senden',it:'Invia'};
 
 const i18n={
-  en:{sub:'Education Fair Assistant',loading:'Loading fair data...',err:'Could not load data',ph:'Ask about programmes, admission, costs...',searching:'searching...',errReply:'Could not get a response.',standLbl:'📍 Recommended stand',
+  en:{sub:'Education Fair Assistant',loading:'Loading fair data...',err:'Could not load data',ph:'Type or choose below...',searching:'searching...',errReply:'Could not get a response.',standLbl:'📍 Recommended stand',
     chips:["🎓 Bachelor's degree","📚 Master's degree","🔬 Sciences & Medicine","💼 Business & Economics","💻 IT & Engineering","🎨 Arts & Humanities"],
     queries:["I'm looking for a Bachelor's programme","I'm looking for a Master's programme","I'm interested in sciences or medicine","I'm interested in business or economics","I'm interested in IT or engineering","I'm interested in arts or humanities"],
+    firstOptions:["🎓 University", "📚 Language courses", "🏫 Private school", "🌍 Study abroad agency", "💼 Internship"],
     welcome:()=>`Hello! Tell me — are you looking for a university, a language course, a school, or maybe an agency to help with applications abroad?`},
-  ru:{sub:'Ассистент образовательной выставки',loading:'Загрузка данных...',err:'Не удалось загрузить данные',ph:'Спросите о специальностях, поступлении...',searching:'ищу информацию...',errReply:'Не удалось получить ответ.',standLbl:'📍 Рекомендуемый стенд',
+  ru:{sub:'Ассистент образовательной выставки',loading:'Загрузка данных...',err:'Не удалось загрузить данные',ph:'Напишите или выберите...',searching:'ищу информацию...',errReply:'Не удалось получить ответ.',standLbl:'📍 Рекомендуемый стенд',
     chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Науки и медицина","💼 Бизнес и экономика","💻 IT и инженерия","🎨 Гуманитарные науки"],
     queries:["Ищу программу бакалавриата","Ищу программу магистратуры","Интересуют науки или медицина","Интересует бизнес или экономика","Интересует IT или инженерия","Интересуют гуманитарные науки"],
+    firstOptions:["🎓 Университет", "📚 Языковые курсы", "🏫 Частная школа", "🌍 Агентство по поступлению", "💼 Стажировка"],
     welcome:()=>`Привет! Скажите — вы ищете университет, языковые курсы, школу или, может быть, агентство, которое поможет с поступлением за рубеж?`},
-  kk:{sub:'Білім көрмесінің көмекшісі',loading:'Деректер жүктелуде...',err:'Деректерді жүктеу мүмкін болмады',ph:'Мамандықтар туралы сұраңыз...',searching:'іздеуде...',errReply:'Жауап алу мүмкін болмады.',standLbl:'📍 Ұсынылатын стенд',
+  kk:{sub:'Білім көрмесінің көмекшісі',loading:'Деректер жүктелуде...',err:'Деректерді жүктеу мүмкін болмады',ph:'Жазыңыз...',searching:'іздеуде...',errReply:'Жауап алу мүмкін болмады.',standLbl:'📍 Ұсынылатын стенд',
     chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Ғылым және медицина","💼 Бизнес және экономика","💻 IT және инженерия","🎨 Гуманитарлық"],
     queries:["Бакалавриат бағдарламасын іздеймін","Магистратура бағдарламасын іздеймін","Ғылым немесе медицина қызықтырады","Бизнес немесе экономика қызықтырады","IT немесе инженерия қызықтырады","Гуманитарлық бағыт қызықтырады"],
+    firstOptions:["🎓 Университет", "📚 Тіл курстары", "🏫 Жеке мектеп", "🌍 Оқуға түсу агенттігі", "💼 Тағылымдама"],
     welcome:()=>`Сәлем! Айтыңызшы — сіз университет, тіл курстары, мектеп іздеп жүрсіз бе, әлде шетелге оқуға түсуге көмектесетін агенттік пе?`},
   uz:{sub:"Ta'lim yarmarkasi yordamchisi",loading:"Ma'lumotlar yuklanmoqda...",err:"Ma'lumotlarni yuklab bo'lmadi",ph:"Mutaxassisliklar haqida so'rang...",searching:'qidirmoqda...',errReply:"Javob olishning imkoni bo'lmadi.",standLbl:'📍 Tavsiya etilgan stend',
     chips:["🎓 Bakalavr","📚 Magistratura","🔬 Fan va tibbiyot","💼 Biznes va iqtisodiyot","💻 IT va muhandislik","🎨 Gumanitar"],
     queries:["Bakalavr dasturini qidiraman","Magistratura dasturini qidiraman","Fan yoki tibbiyot qiziqtiradi","Biznes yoki iqtisodiyot qiziqtiradi","IT yoki muhandislik qiziqtiradi","Gumanitar yo'nalish qiziqtiradi"],
+    firstOptions:["🎓 Universitet", "📚 Til kurslari", "🏫 Xususiy maktab", "🌍 Xorijda o'qish agentligi", "💼 Stajirovka"],
     welcome:()=>`Salom! Ayting — siz universitet, til kurslari, maktab yoki xorijda o'qishga qabul bo'lishda yordam beradigan agentlik qidiryapsizmi?`},
-  ky:{sub:'Билим кѳргѳзмѳсүнүн жардамчысы',loading:'Маалыматтар жүктѳлүүдѳ...',err:'Маалыматтарды жүктѳѳ мүмкүн болгон жок',ph:'Адистиктер жөнүндө сураңыз...',searching:'издеп жатат...',errReply:'Жооп алуу мүмкүн болгон жок.',standLbl:'📍 Сунушталган стенд',
+  ky:{sub:'Билим кѳргѳзмѳсүнүн жардамчысы',loading:'Маалыматтар жүктѳлүүдѳ...',err:'Маалыматтарды жүктѳѳ мүмкүн болгон жок',ph:'Жазыңыз...',searching:'издеп жатат...',errReply:'Жооп алуу мүмкүн болгон жок.',standLbl:'📍 Сунушталган стенд',
     chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Илим жана медицина","💼 Бизнес жана экономика","💻 IT жана инженерия","🎨 Гуманитардык"],
     queries:["Бакалавриат программасын издеп жатам","Магистратура программасын издеп жатам","Илим же медицина кызыктырат","Бизнес же экономика кызыктырат","IT же инженерия кызыктырат","Гуманитардык багыт кызыктырат"],
+    firstOptions:["🎓 Университет", "📚 Тил курстары", "🏫 Жеке мектеп", "🌍 Агенттик", "💼 Тажрыйба"],
     welcome:()=>`Салам! Айтыңызчы — сиз университет, тил курстары, мектеп же чет өлкөдө окууга жардам берүүчү агенттик издеп жатасызбы?`},
-  az:{sub:'Təhsil sərgisi assistenti',loading:'Məlumatlar yüklənir...',err:'Məlumatları yükləmək mümkün olmadı',ph:'İxtisaslar haqqında soruşun...',searching:'axtarılır...',errReply:'Cavab almaq mümkün olmadı.',standLbl:'📍 Tövsiyə olunan stend',
+  az:{sub:'Təhsil sərgisi assistenti',loading:'Məlumatlar yüklənir...',err:'Məlumatları yükləmək mümkün olmadı',ph:'Yazın...',searching:'axtarılır...',errReply:'Cavab almaq mümkün olmadı.',standLbl:'📍 Tövsiyə olunan stend',
     chips:["🎓 Bakalavr","📚 Magistratura","🔬 Elm və tibb","💼 Biznes və iqtisadiyyat","💻 İT və mühəndislik","🎨 Humanitar"],
     queries:["Bakalavr proqramı axtarıram","Magistratura proqramı axtarıram","Elm və ya tibb maraqlandırır","Biznes və ya iqtisadiyyat maraqlandırır","İT və ya mühəndislik maraqlandırır","Humanitar istiqamət maraqlandırır"],
+    firstOptions:["🎓 Universitet", "📚 Dil kursları", "🏫 Özəl məktəb", "🌍 Xaricdə təhsil agentliyi", "💼 Təcrübə"],
     welcome:()=>`Salam! Deyin görüm — siz universitet, dil kursları, məktəb axtarırsınız, yoxsa xaricdə təhsil almaqda kömək edəcək agentlik?`},
-  ka:{sub:'საგანმანათლებლო გამოფენის ასისტენტი',loading:'მონაცემები იტვირთება...',err:'მონაცემების ჩატვირთვა ვერ მოხერხდა',ph:'სპეციალობები, მიღება...',searching:'ძიება...',errReply:'პასუხის მიღება ვერ მოხერხდა.',standLbl:'📍 რეკომენდებული სტენდი',
+  ka:{sub:'საგანმანათლებლო გამოფენის ასისტენტი',loading:'მონაცემები იტვირთება...',err:'მონაცემების ჩატვირთვა ვერ მოხერხდა',ph:'დაწერეთ...',searching:'ძიება...',errReply:'პასუხის მიღება ვერ მოხერხდა.',standLbl:'📍 რეკომენდებული სტენდი',
     chips:["🎓 ბაკალავრიატი","📚 მაგისტრატურა","🔬 მეცნიერება და მედიცინა","💼 ბიზნესი და ეკონომიკა","💻 IT და ინჟინერია","🎨 ჰუმანიტარული"],
     queries:["ვეძებ ბაკალავრის პროგრამას","ვეძებ მაგისტრის პროგრამას","მაინტერესებს მეცნიერება ან მედიცინა","მაინტერესებს ბიზნესი ან ეკონომიკა","მაინტერესებს IT ან ინჟინერია","მაინტერესებს ჰუმანიტარული მიმართულება"],
+    firstOptions:["🎓 უნივერსიტეტი", "📚 ენის კურსები", "🏫 კერძო სკოლა", "🌍 სააგენტო", "💼 სტაჟირება"],
     welcome:()=>`გამარჯობა! მითხარით — ეძებთ უნივერსიტეტს, ენის კურსებს, სკოლას თუ სააგენტოს, რომელიც საზღვარგარეთ სწავლაში დაგეხმარებათ?`},
-  ro:{sub:'Asistentul târgului educațional',loading:'Se încarcă datele...',err:'Nu s-au putut încărca datele',ph:'Întrebați despre programe, admitere...',searching:'se caută...',errReply:'Nu s-a putut obține un răspuns.',standLbl:'📍 Stand recomandat',
+  ro:{sub:'Asistentul târgului educațional',loading:'Se încarcă datele...',err:'Nu s-au putut încărca datele',ph:'Scrieți...',searching:'se caută...',errReply:'Nu s-a putut obține un răspuns.',standLbl:'📍 Stand recomandat',
     chips:["🎓 Licență","📚 Master","🔬 Științe și medicină","💼 Economie și business","💻 IT și inginerie","🎨 Umanistice"],
     queries:["Caut un program de licență","Caut un program de master","Mă interesează științele sau medicina","Mă interesează business sau economia","Mă interesează IT sau ingineria","Mă interesează științele umaniste"],
+    firstOptions:["🎓 Universitate", "📚 Cursuri de limbă", "🏫 Școală privată", "🌍 Agenție studii", "💼 Stagiu"],
     welcome:()=>`Bună! Spuneți-mi — căutați o universitate, cursuri de limbă, o școală sau poate o agenție care să vă ajute cu admiterea în străinătate?`},
-  id:{sub:'Asisten Pameran Pendidikan',loading:'Memuat data...',err:'Gagal memuat data',ph:'Tanyakan tentang program, penerimaan...',searching:'mencari...',errReply:'Tidak dapat memperoleh respons.',standLbl:'📍 Stand yang direkomendasikan',
+  id:{sub:'Asisten Pameran Pendidikan',loading:'Memuat data...',err:'Gagal memuat data',ph:'Ketik...',searching:'mencari...',errReply:'Tidak dapat memperoleh respons.',standLbl:'📍 Stand yang direkomendasikan',
     chips:["🎓 Sarjana (S1)","📚 Magister (S2)","🔬 Sains & Kedokteran","💼 Bisnis & Ekonomi","💻 IT & Teknik","🎨 Humaniora"],
     queries:["Saya mencari program sarjana","Saya mencari program magister","Saya tertarik sains atau kedokteran","Saya tertarik bisnis atau ekonomi","Saya tertarik IT atau teknik","Saya tertarik humaniora"],
+    firstOptions:["🎓 Universitas", "📚 Kursus bahasa", "🏫 Sekolah swasta", "🌍 Agen studi", "💼 Magang"],
     welcome:()=>`Halo! Ceritakan — apakah Anda mencari universitas, kursus bahasa, sekolah, atau mungkin agen yang bisa membantu pendaftaran ke luar negeri?`},
-  ar:{sub:'مساعد معرض التعليم',loading:'جار تحميل البيانات...',err:'تعذر تحميل البيانات',ph:'اسأل عن البرامج والقبول...',searching:'جار البحث...',errReply:'تعذر الحصول على رد.',standLbl:'📍 الجناح الموصى به',
+  ar:{sub:'مساعد معرض التعليم',loading:'جار تحميل البيانات...',err:'تعذر تحميل البيانات',ph:'اكتب...',searching:'جار البحث...',errReply:'تعذر الحصول على رد.',standLbl:'📍 الجناح الموصى به',
     chips:["🎓 البكالوريوس","📚 الماجستير","🔬 العلوم والطب","💼 الأعمال والاقتصاد","💻 تكنولوجيا المعلومات والهندسة","🎨 العلوم الإنسانية"],
     queries:["أبحث عن برنامج بكالوريوس","أبحث عن برنامج ماجستير","أنا مهتم بالعلوم أو الطب","أنا مهتم بالأعمال أو الاقتصاد","أنا مهتم بتكنولوجيا المعلومات","أنا مهتم بالعلوم الإنسانية"],
+    firstOptions:["🎓 جامعة", "📚 دورات لغوية", "🏫 مدرسة خاصة", "🌍 وكالة دراسة", "💼 تدريب"],
     welcome:()=>`مرحباً! أخبرني — هل تبحث عن جامعة، أم دورات لغوية، أم مدرسة، أم ربما وكالة تساعدك في القبول بالخارج؟`},
-  vi:{sub:'Trợ lý Hội chợ Giáo dục',loading:'Đang tải dữ liệu...',err:'Không thể tải dữ liệu',ph:'Hỏi về chương trình, tuyển sinh...',searching:'đang tìm kiếm...',errReply:'Không thể nhận được phản hồi.',standLbl:'📍 Gian hàng được đề xuất',
+  vi:{sub:'Trợ lý Hội chợ Giáo dục',loading:'Đang tải dữ liệu...',err:'Không thể tải dữ liệu',ph:'Nhập...',searching:'đang tìm kiếm...',errReply:'Không thể nhận được phản hồi.',standLbl:'📍 Gian hàng được đề xuất',
     chips:["🎓 Đại học","📚 Thạc sĩ","🔬 Khoa học & Y khoa","💼 Kinh doanh & Kinh tế","💻 CNTT & Kỹ thuật","🎨 Nhân văn"],
     queries:["Tôi tìm chương trình đại học","Tôi tìm chương trình thạc sĩ","Tôi quan tâm khoa học hoặc y khoa","Tôi quan tâm kinh doanh hoặc kinh tế","Tôi quan tâm CNTT hoặc kỹ thuật","Tôi quan tâm nhân văn"],
+    firstOptions:["🎓 Đại học", "📚 Khóa ngôn ngữ", "🏫 Trường tư", "🌍 Đại lý du học", "💼 Thực tập"],
     welcome:()=>`Xin chào! Cho tôi biết — bạn đang tìm trường đại học, khóa học ngôn ngữ, trường phổ thông, hay có thể là một đại lý hỗ trợ du học?`},
-  hi:{sub:'शिक्षा मेले का सहायक',loading:'डेटा लोड हो रहा है...',err:'डेटा लोड नहीं हो सका',ph:'कार्यक्रम, प्रवेश के बारे में पूछें...',searching:'खोज रहे हैं...',errReply:'उत्तर प्राप्त नहीं हो सका।',standLbl:'📍 अनुशंसित स्टॉल',
+  hi:{sub:'शिक्षा मेले का सहायक',loading:'डेटा लोड हो रहा है...',err:'डेटा लोड नहीं हो सका',ph:'लिखें...',searching:'खोज रहे हैं...',errReply:'उत्तर प्राप्त नहीं हो सका।',standLbl:'📍 अनुशंसित स्टॉल',
     chips:["🎓 स्नातक","📚 स्नातकोत्तर","🔬 विज्ञान और चिकित्सा","💼 व्यापार और अर्थशास्त्र","💻 IT और इंजीनियरिंग","🎨 मानविकी"],
     queries:["मैं स्नातक कार्यक्रम खोज रहा हूं","मैं स्नातकोत्तर कार्यक्रम खोज रहा हूं","मुझे विज्ञान या चिकित्सा में रुचि है","मुझे व्यापार में रुचि है","मुझे IT में रुचि है","मुझे मानविकी में रुचि है"],
+    firstOptions:["🎓 विश्वविद्यालय", "📚 भाषा पाठ्यक्रम", "🏫 निजी विद्यालय", "🌍 अध्ययन एजेंसी", "💼 इंटर्नशिप"],
     welcome:()=>`नमस्ते! बताइए — क्या आप विश्वविद्यालय, भाषा पाठ्यक्रम, स्कूल, या शायद विदेश में प्रवेश में मदद करने वाली एजेंसी खोज रहे हैं?`},
-  de:{sub:'Assistent der Bildungsmesse',loading:'Daten werden geladen...',err:'Daten konnten nicht geladen werden',ph:'Fragen zu Studiengängen, Zulassung...',searching:'suche...',errReply:'Antwort konnte nicht abgerufen werden.',standLbl:'📍 Empfohlener Stand',
+  de:{sub:'Assistent der Bildungsmesse',loading:'Daten werden geladen...',err:'Daten konnten nicht geladen werden',ph:'Schreiben...',searching:'suche...',errReply:'Antwort konnte nicht abgerufen werden.',standLbl:'📍 Empfohlener Stand',
     chips:["🎓 Bachelor","📚 Master","🔬 Naturwissenschaften & Medizin","💼 Wirtschaft & BWL","💻 IT & Ingenieurwesen","🎨 Geisteswissenschaften"],
     queries:["Ich suche ein Bachelorprogramm","Ich suche ein Masterprogramm","Ich interessiere mich für Naturwissenschaften","Ich interessiere mich für Wirtschaft","Ich interessiere mich für IT","Ich interessiere mich für Geisteswissenschaften"],
+    firstOptions:["🎓 Universität", "📚 Sprachkurse", "🏫 Privatschule", "🌍 Studienberatung", "💼 Praktikum"],
     welcome:()=>`Hallo! Sagen Sie mir — suchen Sie eine Universität, Sprachkurse, eine Schule oder vielleicht eine Agentur, die Ihnen bei der Bewerbung im Ausland hilft?`},
-  it:{sub:"Assistente della Fiera dell'Istruzione",loading:'Caricamento dati...',err:'Impossibile caricare i dati',ph:'Chiedi di programmi, ammissione...',searching:'ricerca...',errReply:'Impossibile ottenere una risposta.',standLbl:'📍 Stand consigliato',
+  it:{sub:"Assistente della Fiera dell'Istruzione",loading:'Caricamento dati...',err:'Impossibile caricare i dati',ph:'Scrivi...',searching:'ricerca...',errReply:'Impossibile ottenere una risposta.',standLbl:'📍 Stand consigliato',
     chips:["🎓 Triennale","📚 Magistrale","🔬 Scienze e medicina","💼 Economia e business","💻 IT e ingegneria","🎨 Umanistiche"],
     queries:["Cerco un corso triennale","Cerco un corso magistrale","Mi interessano le scienze o la medicina","Mi interessa l'economia","Mi interessa l'informatica","Mi interessano le discipline umanistiche"],
+    firstOptions:["🎓 Università", "📚 Corsi di lingua", "🏫 Scuola privata", "🌍 Agenzia studi", "💼 Tirocinio"],
     welcome:()=>`Ciao! Dimmi — stai cercando un'università, corsi di lingua, una scuola, o forse un'agenzia che ti aiuti con le iscrizioni all'estero?`}
 };
 
@@ -250,7 +264,12 @@ function renderMarkdown(text){
 }
 
 function showWelcome(){
-  addMessage('bot', t().welcome());
+  const l = t();
+  const firstOptions = l.firstOptions;
+  const welcomeHtml = firstOptions
+    ? l.welcome() + '\n<<<OPTIONS:' + JSON.stringify(firstOptions) + '>>>'
+    : l.welcome();
+  addMessage('bot', welcomeHtml);
 }
 
 function renderOptions(text) {
