@@ -7,12 +7,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>UniGuide — Ассистент выставки</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --green-50: #E1F5EE; --green-100: #9FE1CB; --green-400: #1D9E75;
-    --green-600: #0F6E56; --green-800: #085041;
+    --green-600: #0F6E56;
     --bg: #FFFFFF; --bg2: #F5F5F3; --bg3: #EDEDE9;
     --text: #1A1A18; --text2: #6B6B67; --text3: #9E9E99;
     --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
@@ -94,7 +94,6 @@
 </style>
 </head>
 <body>
-
 <div class="app">
   <div class="header">
     <div class="header-row">
@@ -105,14 +104,11 @@
       </div>
     </div>
   </div>
-
   <div class="expo-bar">
     <div class="expo-label">Участники выставки</div>
     <div class="stands-scroll" id="stands-list"></div>
   </div>
-
   <div class="messages" id="messages"></div>
-
   <div class="input-area">
     <div class="input-wrap">
       <textarea id="input" rows="1" placeholder="Спросите о специальностях, поступлении..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -122,7 +118,6 @@
     </button>
   </div>
 </div>
-
 <div class="modal-overlay hidden" id="modal" onclick="handleOverlayClick(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -143,19 +138,14 @@
 </div>
 
 <script>
-// ======================================================
-// НАСТРОЙКИ ВЫСТАВКИ — замените перед публикацией
-// ======================================================
-const API_KEY = "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"; // ← вставьте ваш Anthropic API ключ
+const API_KEY = "REPLACE_WITH_YOUR_API_KEY";
 
 const UNIVERSITIES = [
   { name: "МГУ им. Ломоносова",  stand: "Зал А, стенд 1" },
   { name: "МГТУ им. Баумана",    stand: "Зал А, стенд 2" },
   { name: "СПбГУ",               stand: "Зал Б, стенд 3" },
   { name: "НИУ ВШЭ",             stand: "Зал В, стенд 4" },
-  // Добавляйте университеты здесь по образцу выше
 ];
-// ======================================================
 
 let conversation = [];
 let isBusy = false;
@@ -171,7 +161,7 @@ function renderStands() {
   });
   const btn = document.createElement('button');
   btn.className = 'add-btn';
-  btn.innerHTML = '<i class="ti ti-plus" aria-hidden="true"></i> добавить';
+  btn.innerHTML = '+ добавить';
   btn.onclick = openModal;
   list.appendChild(btn);
 }
@@ -204,9 +194,7 @@ function addMessage(role, html, standInfo) {
   wrap.className = `msg ${role}`;
   const av = document.createElement('div');
   av.className = `av ${role}`;
-  av.innerHTML = role === 'bot'
-    ? '<i class="ti ti-robot" aria-hidden="true"></i>'
-    : '<i class="ti ti-user" aria-hidden="true"></i>';
+  av.innerHTML = role === 'bot' ? '🤖' : '👤';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
   bubble.innerHTML = html;
@@ -227,7 +215,7 @@ function addLoadingMsg() {
   const wrap = document.createElement('div');
   wrap.className = 'msg bot';
   wrap.id = 'loading-msg';
-  wrap.innerHTML = `<div class="av bot"><i class="ti ti-robot" aria-hidden="true"></i></div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div></div>`;
+  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -317,7 +305,6 @@ ${uniList}
   document.getElementById('send-btn').disabled = false;
 }
 
-// Init
 renderStands();
 addMessage('bot', `Привет! Я помогу выбрать университет среди участников сегодняшней выставки. О чём хотите узнать?
   <div class="chips">
