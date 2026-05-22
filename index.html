@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0F6E56">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>UniGuide — Ассистент выставки</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
 <style>
@@ -38,13 +37,13 @@
   .header-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
   .header-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
   .expo-bar { flex-shrink: 0; padding: 10px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
-  .expo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px; }
+  .expo-meta { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  .expo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
   .stands-scroll { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
   .stands-scroll::-webkit-scrollbar { display: none; }
   .stand-tag { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--radius-pill); border: 0.5px solid var(--green-100); background: var(--green-50); font-size: 12px; font-weight: 500; color: var(--green-600); white-space: nowrap; flex-shrink: 0; }
   .stand-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-400); }
-  .add-btn { display: flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: var(--radius-pill); border: 0.5px dashed var(--border2); background: none; font-size: 12px; color: var(--text3); cursor: pointer; white-space: nowrap; flex-shrink: 0; font-family: var(--font); }
-  .add-btn:active { opacity: 0.6; }
+  .loading-tag { padding: 5px 10px; border-radius: var(--radius-pill); border: 0.5px dashed var(--border2); font-size: 12px; color: var(--text3); white-space: nowrap; flex-shrink: 0; }
   .messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
   .msg { display: flex; gap: 7px; max-width: 92%; }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
@@ -58,11 +57,12 @@
   .stand-card { margin-top: 9px; padding: 10px 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--green-100); background: var(--green-50); }
   .stand-card-label { font-size: 10px; color: var(--green-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
   .stand-card-name { font-size: 13px; font-weight: 600; color: var(--green-600); }
-  .stand-card-loc { font-size: 12px; color: var(--green-400); margin-top: 2px; }
+  .stand-card-meta { font-size: 11px; color: var(--green-400); margin-top: 2px; }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
   .chip { padding: 6px 11px; border-radius: var(--radius-pill); border: 0.5px solid var(--border2); background: var(--bg); font-size: 12.5px; color: var(--text2); cursor: pointer; font-family: var(--font); }
   .chip:active { background: var(--bg3); }
-  .loading-bubble { padding: 11px 14px; background: var(--bg2); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); display: flex; align-items: center; gap: 4px; }
+  .loading-bubble { padding: 11px 14px; background: var(--bg2); border-radius: 4px var(--radius) var(--radius) var(--radius); border: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
+  .loading-bubble span { font-size: 12px; color: var(--text3); }
   .dot-anim span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); animation: blink 1.2s infinite; }
   .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
   .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
@@ -76,21 +76,6 @@
   .send-btn:active { transform: scale(0.93); background: var(--green-600); }
   .send-btn:disabled { opacity: 0.35; }
   .send-btn i { font-size: 17px; color: #fff; }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; z-index: 100; animation: fadeIn 0.15s; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  .modal-sheet { width: 100%; max-width: 600px; margin: 0 auto; background: var(--bg); border-radius: var(--radius) var(--radius) 0 0; padding: 20px 20px calc(20px + var(--safe-bottom)); animation: slideUp 0.2s ease-out; }
-  @keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
-  .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 18px; }
-  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
-  .modal-field { margin-bottom: 10px; }
-  .modal-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-  .modal-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 15px; font-family: var(--font); background: var(--bg2); color: var(--text); outline: none; -webkit-appearance: none; }
-  .modal-input:focus { border-color: var(--green-400); }
-  .modal-btns { display: flex; gap: 8px; margin-top: 16px; }
-  .btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); background: var(--bg3); border: none; color: var(--text2); font-size: 15px; font-family: var(--font); cursor: pointer; }
-  .btn-add { flex: 2; padding: 12px; border-radius: var(--radius-sm); background: var(--green-400); border: none; color: #fff; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; }
-  .btn-add:active { background: var(--green-600); }
-  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -105,87 +90,117 @@
     </div>
   </div>
   <div class="expo-bar">
-    <div class="expo-label">Участники выставки</div>
-    <div class="stands-scroll" id="stands-list"></div>
+    <div class="expo-meta" id="expo-meta">Загрузка данных выставки...</div>
+    <div class="expo-label">Участники</div>
+    <div class="stands-scroll" id="stands-list">
+      <div class="loading-tag">загрузка...</div>
+    </div>
   </div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
     <div class="input-wrap">
-      <textarea id="input" rows="1" placeholder="Спросите о специальностях, поступлении..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <textarea id="input" rows="1" placeholder="Спросите о специальностях, поступлении..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
-    <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Отправить">
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Отправить" disabled>
       <i class="ti ti-arrow-up"></i>
     </button>
   </div>
 </div>
-<div class="modal-overlay hidden" id="modal" onclick="handleOverlayClick(event)">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Добавить участника выставки</div>
-    <div class="modal-field">
-      <div class="modal-label">Название университета</div>
-      <input class="modal-input" type="text" id="uni-name" placeholder="Например: МГУ им. Ломоносова" />
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">Расположение стенда</div>
-      <input class="modal-input" type="text" id="uni-stand" placeholder="Например: Зал А, стенд 12" />
-    </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Отмена</button>
-      <button class="btn-add" onclick="addUniversity()">Добавить</button>
-    </div>
-  </div>
-</div>
 
 <script>
+// ======================================================
 const API_KEY = "REPLACE_WITH_YOUR_API_KEY";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSna_RrRUCMLh8p7mMRK4JBEcjJJ8MvO-aGEJ_lkWZJ_Y9Feo1zEtq986_Qk831bW5gTCIEOqFGQzBR/pub?gid=0&single=true&output=csv";
+// ======================================================
 
-const UNIVERSITIES = [
-  { name: "МГУ им. Ломоносова",  stand: "Зал А, стенд 1" },
-  { name: "МГТУ им. Баумана",    stand: "Зал А, стенд 2" },
-  { name: "СПбГУ",               stand: "Зал Б, стенд 3" },
-  { name: "НИУ ВШЭ",             stand: "Зал В, стенд 4" },
-];
-
+let participants = [];
+let expoInfo = {};
 let conversation = [];
 let isBusy = false;
 
-function renderStands() {
-  const list = document.getElementById('stands-list');
-  list.innerHTML = '';
-  UNIVERSITIES.forEach(u => {
-    const tag = document.createElement('div');
-    tag.className = 'stand-tag';
-    tag.innerHTML = `<span class="stand-dot"></span>${u.name}`;
-    list.appendChild(tag);
+// Parse CSV
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const values = [];
+    let cur = '', inQ = false;
+    for (let ch of line) {
+      if (ch === '"') inQ = !inQ;
+      else if (ch === ',' && !inQ) { values.push(cur.trim()); cur = ''; }
+      else cur += ch;
+    }
+    values.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (values[i] || '').replace(/^"|"$/g, ''));
+    return obj;
   });
-  const btn = document.createElement('button');
-  btn.className = 'add-btn';
-  btn.innerHTML = '+ добавить';
-  btn.onclick = openModal;
-  list.appendChild(btn);
 }
 
-function openModal() {
-  document.getElementById('modal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('uni-name').focus(), 100);
+async function loadParticipants() {
+  try {
+    const resp = await fetch(CSV_URL);
+    const text = await resp.text();
+    const rows = parseCSV(text);
+
+    participants = rows.map(r => ({
+      type: r['Type'] || '',
+      name: r['Name'] || '',
+      country: r['Country'] || '',
+      date: r['Date'] || '',
+      place: r['Place'] || '',
+      time: r['Time'] || '',
+      stand: r['Stand'] || ''
+    })).filter(p => p.name);
+
+    // Extract expo info from first row
+    if (participants.length > 0) {
+      expoInfo = {
+        date: participants[0].date,
+        place: participants[0].place.trim(),
+        time: participants[0].time
+      };
+    }
+
+    renderExpoBar();
+    enableChat();
+    showWelcome();
+  } catch (e) {
+    document.getElementById('expo-meta').textContent = 'Не удалось загрузить данные выставки';
+    document.getElementById('stands-list').innerHTML = '<div class="loading-tag">ошибка загрузки</div>';
+  }
 }
-function closeModal() {
-  document.getElementById('modal').classList.add('hidden');
-  document.getElementById('uni-name').value = '';
-  document.getElementById('uni-stand').value = '';
+
+function renderExpoBar() {
+  document.getElementById('expo-meta').textContent =
+    `📅 ${expoInfo.date} · ⏰ ${expoInfo.time} · 📍 ${expoInfo.place}`;
+
+  const list = document.getElementById('stands-list');
+  list.innerHTML = '';
+  participants.forEach(p => {
+    const tag = document.createElement('div');
+    tag.className = 'stand-tag';
+    tag.innerHTML = `<span class="stand-dot"></span>${p.name}`;
+    list.appendChild(tag);
+  });
 }
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modal')) closeModal();
+
+function enableChat() {
+  document.getElementById('input').disabled = false;
+  document.getElementById('send-btn').disabled = false;
 }
-function addUniversity() {
-  const name = document.getElementById('uni-name').value.trim();
-  const stand = document.getElementById('uni-stand').value.trim();
-  if (!name) return;
-  UNIVERSITIES.push({ name, stand: stand || 'Уточните у организаторов' });
-  renderStands();
-  closeModal();
-  addMessage('bot', `Добавлен стенд: <strong>${name}</strong> — ${stand || 'место уточняется'}.`);
+
+function showWelcome() {
+  const uniCount = participants.filter(p => p.type === 'Universities').length;
+  addMessage('bot', `Привет! На выставке сегодня ${participants.length} участников, из них ${uniCount} университетов из разных стран. Помогу найти подходящий вариант — спрашивайте!
+    <div class="chips">
+      <div class="chip" onclick="quickAsk('Хочу стать программистом — куда поступить?')">💻 IT и программирование</div>
+      <div class="chip" onclick="quickAsk('Интересует медицина')">🔬 Медицина</div>
+      <div class="chip" onclick="quickAsk('Хочу учиться в Европе')">🇪🇺 Европа</div>
+      <div class="chip" onclick="quickAsk('Какие университеты из США?')">🇺🇸 США</div>
+      <div class="chip" onclick="quickAsk('Расскажите о стоимости обучения')">💰 Стоимость</div>
+      <div class="chip" onclick="quickAsk('Какие агентства по поступлению за рубеж?')">🌍 Агентства</div>
+    </div>`);
 }
 
 function addMessage(role, html, standInfo) {
@@ -201,7 +216,10 @@ function addMessage(role, html, standInfo) {
   if (standInfo) {
     const card = document.createElement('div');
     card.className = 'stand-card';
-    card.innerHTML = `<div class="stand-card-label">📍 рекомендуемый стенд</div><div class="stand-card-name">${standInfo.name}</div><div class="stand-card-loc">${standInfo.stand}</div>`;
+    card.innerHTML = `
+      <div class="stand-card-label">📍 рекомендуемый стенд</div>
+      <div class="stand-card-name">${standInfo.name}</div>
+      <div class="stand-card-meta">${standInfo.country ? standInfo.country + ' · ' : ''}Стенд ${standInfo.stand}</div>`;
     bubble.appendChild(card);
   }
   wrap.appendChild(av);
@@ -215,7 +233,7 @@ function addLoadingMsg() {
   const wrap = document.createElement('div');
   wrap.className = 'msg bot';
   wrap.id = 'loading-msg';
-  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div></div>`;
+  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div><span>ищу информацию...</span></div>`;
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -237,7 +255,7 @@ function quickAsk(text) {
 }
 
 async function sendMessage() {
-  if (isBusy) return;
+  if (isBusy || participants.length === 0) return;
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
@@ -249,18 +267,25 @@ async function sendMessage() {
   document.getElementById('send-btn').disabled = true;
   addLoadingMsg();
 
-  const uniList = UNIVERSITIES.map((u, i) => `${i+1}. ${u.name} (${u.stand})`).join('\n');
-  const systemPrompt = `Ты — дружелюбный ассистент-навигатор на образовательной выставке. Помогаешь абитуриентам выбрать университет.
+  const participantList = participants.map((p, i) =>
+    `${i+1}. [${p.type}] ${p.name}${p.country ? ' (' + p.country + ')' : ''} — Стенд ${p.stand}`
+  ).join('\n');
 
-КЛЮЧЕВОЕ ПРАВИЛО: Рекомендуй ТОЛЬКО университеты с этой выставки:
-${uniList}
+  const systemPrompt = `Ты — дружелюбный ассистент-навигатор на образовательной выставке.
 
-Как отвечать:
-1. Дай краткий полезный ответ (2-4 предложения) о подходящем университете
-2. Если нужна свежая информация — используй веб-поиск
-3. В конце ВСЕГДА добавляй маркер: <<<STAND:{"index":N}>>> где N — номер из списка (1-${UNIVERSITIES.length}), или 0 если не можешь определить
+ВЫСТАВКА: ${expoInfo.place}
+ДАТА: ${expoInfo.date}, ${expoInfo.time}
 
-Стиль: тёплый, на «вы», короткие предложения, без канцелярита.`;
+УЧАСТНИКИ ВЫСТАВКИ (рекомендуй ТОЛЬКО их):
+${participantList}
+
+Правила:
+1. Отвечай кратко и по делу (2-4 предложения)
+2. Если нужна свежая информация об университете — используй веб-поиск
+3. Учитывай тип участника: Universities, Study Abroad Agencies, Private Schools, Language Tests, Internship Agency
+4. В конце ВСЕГДА добавляй маркер: <<<STAND:{"index":N}>>> где N — номер участника из списка выше (1-${participants.length}), или 0 если не можешь определить
+
+Стиль: тёплый, на «вы», без канцелярита.`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -291,7 +316,7 @@ ${uniList}
     let standInfo = null;
     if (standMatch) {
       const idx = parseInt(standMatch[1]) - 1;
-      if (idx >= 0 && idx < UNIVERSITIES.length) standInfo = UNIVERSITIES[idx];
+      if (idx >= 0 && idx < participants.length) standInfo = participants[idx];
     }
     const display = fullText.replace(/<<<STAND:.*?>>>/g, '').trim().replace(/\n/g, '<br>');
     addMessage('bot', display, standInfo);
@@ -305,16 +330,8 @@ ${uniList}
   document.getElementById('send-btn').disabled = false;
 }
 
-renderStands();
-addMessage('bot', `Привет! Я помогу выбрать университет среди участников сегодняшней выставки. О чём хотите узнать?
-  <div class="chips">
-    <div class="chip" onclick="quickAsk('Хочу стать программистом — куда поступить?')">💻 IT и программирование</div>
-    <div class="chip" onclick="quickAsk('Интересует медицина и биология')">🔬 Медицина</div>
-    <div class="chip" onclick="quickAsk('Хочу изучать экономику и бизнес')">📊 Экономика</div>
-    <div class="chip" onclick="quickAsk('Где лучшее инженерное образование?')">⚙️ Инженерия</div>
-    <div class="chip" onclick="quickAsk('Расскажите о стоимости обучения')">💰 Стоимость обучения</div>
-    <div class="chip" onclick="quickAsk('Какой университет лучше для иностранных студентов?')">🌍 Для иностранцев</div>
-  </div>`);
+// Start
+loadParticipants();
 </script>
 </body>
 </html>
