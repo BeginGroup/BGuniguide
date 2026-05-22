@@ -39,12 +39,12 @@
   .header-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
   .expo-bar { flex-shrink: 0; padding: 10px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
   .expo-meta { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
-  .expo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
-  .stands-scroll { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
-  .stands-scroll::-webkit-scrollbar { display: none; }
-  .stand-tag { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--radius-pill); border: 0.5px solid var(--green-100); background: var(--green-50); font-size: 12px; font-weight: 500; color: var(--green-600); white-space: nowrap; flex-shrink: 0; }
-  .stand-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-400); }
-  .loading-tag { padding: 5px 10px; border-radius: var(--radius-pill); border: 0.5px dashed var(--border2); font-size: 12px; color: var(--text3); white-space: nowrap; flex-shrink: 0; }
+  
+  
+  
+  
+  
+  
   .messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
   .msg { display: flex; gap: 7px; max-width: 92%; }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
@@ -73,7 +73,7 @@
   textarea { width: 100%; resize: none; border: 0.5px solid var(--border2); border-radius: 20px; padding: 9px 14px; font-size: 15px; font-family: var(--font); background: var(--bg2); color: var(--text); outline: none; min-height: 38px; max-height: 110px; line-height: 1.4; display: block; -webkit-appearance: none; }
   textarea::placeholder { color: var(--text3); }
   textarea:focus { border-color: var(--green-400); }
-  .send-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--green-400); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+  .send-btn { height: 38px; padding: 0 14px; border-radius: 99px; background: var(--green-400); border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; -webkit-tap-highlight-color: transparent; font-family: var(--font); font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; }
   .send-btn:active { transform: scale(0.93); background: var(--green-600); }
   .send-btn:disabled { opacity: 0.35; }
   .send-btn i { font-size: 17px; color: #fff; }
@@ -92,9 +92,6 @@
   </div>
   <div class="expo-bar">
     <div class="expo-meta" id="expo-meta">Loading fair data...</div>
-    <div class="expo-label" id="expo-label">PARTICIPANTS</div>
-    <div class="stands-scroll" id="stands-list">
-      <div class="loading-tag">loading...</div>
     </div>
   </div>
   <div class="messages" id="messages"></div>
@@ -103,7 +100,7 @@
       <textarea id="input" rows="1" placeholder="Ask about programmes, admission, costs..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
     <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Send" disabled>
-      <i class="ti ti-user"></i>
+      <i class="ti ti-user" style="font-size:15px"></i><span id="send-label">Send</span>
     </button>
   </div>
 </div>
@@ -125,9 +122,9 @@ const i18n = {
     ph: 'Ask about programmes, admission, costs...', searching: 'searching...',
     errReply: 'Could not get a response. Please check your internet connection.',
     standLbl: '📍 Recommended stand',
-    chips: ['💻 IT & Computer Science','🔬 Medicine','🇪🇺 Europe','🇺🇸 USA & Canada','💰 Tuition costs','🌍 Study abroad agencies'],
-    queries: ['I want to become a programmer — where to apply?','I am interested in medicine','I want to study in Europe','Which universities from USA or Canada are here?','Tell me about tuition costs','Which study abroad agencies are here?'],
-    welcome: (n,u) => `Hello! Today's fair has ${n} participants, including ${u} universities from different countries. Ask me anything!`
+    chips: ["🎓 Bachelor's degree", "📚 Master's degree", "🔬 Sciences & Medicine", "💼 Business & Economics", "💻 IT & Engineering", "🎨 Arts & Humanities"],
+    queries: ["I'm looking for a Bachelor's programme", "I'm looking for a Master's programme", "I'm interested in sciences or medicine", "I'm interested in business or economics", "I'm interested in IT or engineering", "I'm interested in arts or humanities"],
+    sendLabel: 'Send', sendLabel: 'Отправить', sendLabel: 'Жіберу', sendLabel: 'Yuborish', sendLabel: 'Жөнөтүү', sendLabel: 'Göndər', sendLabel: 'გაგზავნა', sendLabel: 'Trimite', sendLabel: 'Kirim', sendLabel: 'إرسال', sendLabel: 'Gửi', sendLabel: 'भेजें', sendLabel: 'Senden', sendLabel: 'Invia', welcome: (n,u) => `Hello! Today's fair has ${n} participants, including ${u} universities from different countries. Ask me anything!`
   },
   ru: {
     sub: 'Ассистент образовательной выставки', label: 'УЧАСТНИКИ',
@@ -135,8 +132,8 @@ const i18n = {
     ph: 'Спросите о специальностях, поступлении, стоимости...', searching: 'ищу информацию...',
     errReply: 'Не удалось получить ответ. Проверьте подключение к интернету.',
     standLbl: '📍 Рекомендуемый стенд',
-    chips: ['💻 IT и программирование','🔬 Медицина','🇪🇺 Европа','🇺🇸 США и Канада','💰 Стоимость обучения','🌍 Агентства'],
-    queries: ['Хочу стать программистом — куда поступить?','Интересует медицина','Хочу учиться в Европе','Какие университеты из США или Канады?','Расскажите о стоимости обучения','Какие агентства по поступлению за рубеж?'],
+    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Науки и медицина", "💼 Бизнес и экономика", "💻 IT и инженерия", "🎨 Гуманитарные науки"],
+    queries: ["Ищу программу бакалавриата", "Ищу программу магистратуры", "Интересуют науки или медицина", "Интересует бизнес или экономика", "Интересует IT или инженерия", "Интересуют гуманитарные науки"],
     welcome: (n,u) => `Привет! На выставке ${n} участников, из них ${u} университетов. Спрашивайте!`
   },
   kk: {
@@ -145,8 +142,8 @@ const i18n = {
     ph: 'Мамандықтар, қабылдау туралы сұраңыз...', searching: 'іздеуде...',
     errReply: 'Жауап алу мүмкін болмады.',
     standLbl: '📍 Ұсынылатын стенд',
-    chips: ['💻 IT','🔬 Медицина','🇪🇺 Еуропа','🇺🇸 АҚШ','💰 Оқу құны','🌍 Агенттіктер'],
-    queries: ['Бағдарламашы болғым келеді','Медицина қызықтырады','Еуропада оқығым келеді','АҚШ университеттері','Оқу құны туралы','Шетелде оқу агенттіктері'],
+    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Ғылым және медицина", "💼 Бизнес және экономика", "💻 IT және инженерия", "🎨 Гуманитарлық"],
+    queries: ["Бакалавриат бағдарламасын іздеймін", "Магистратура бағдарламасын іздеймін", "Ғылым немесе медицина қызықтырады", "Бизнес немесе экономика қызықтырады", "IT немесе инженерия қызықтырады", "Гуманитарлық бағыт қызықтырады"],
     welcome: (n,u) => `Сәлем! Бүгін ${n} қатысушы, ${u} университет. Сұраңыз!`
   },
   uz: {
@@ -155,8 +152,8 @@ const i18n = {
     ph: 'Mutaxassisliklar, qabul, narxlar haqida so\'rang...', searching: 'qidirmoqda...',
     errReply: 'Javob olishning imkoni bo\'lmadi.',
     standLbl: '📍 Tavsiya etilgan stend',
-    chips: ['💻 IT','🔬 Tibbiyot','🇪🇺 Yevropa','🇺🇸 AQSh','💰 O\'qish narxi','🌍 Agentliklar'],
-    queries: ['Dasturchi bo\'lmoqchiman','Tibbiyot qiziqtiradi','Yevropada o\'qimoqchiman','AQSh universitetlari','O\'qish narxi haqida','Chet elda o\'qish agentliklari'],
+    chips: ["🎓 Bakalavr", "📚 Magistratura", "🔬 Fan va tibbiyot", "💼 Biznes va iqtisodiyot", "💻 IT va muhandislik", "🎨 Gumanitar fanlar"],
+    queries: ["Bakalavr dasturini qidiraman", "Magistratura dasturini qidiraman", "Fan yoki tibbiyot qiziqtiradi", "Biznes yoki iqtisodiyot qiziqtiradi", "IT yoki muhandislik qiziqtiradi", "Gumanitar yo'nalish qiziqtiradi"],
     welcome: (n,u) => `Salom! Bugungi yarmarkada ${n} ishtirokchi, shulardan ${u} ta universitet. Savol bering!`
   },
   ky: {
@@ -165,8 +162,8 @@ const i18n = {
     ph: 'Адистиктер, кабыл алуу жөнүндө сураңыз...', searching: 'издеп жатат...',
     errReply: 'Жооп алуу мүмкүн болгон жок.',
     standLbl: '📍 Сунушталган стенд',
-    chips: ['💻 IT','🔬 Медицина','🇪🇺 Европа','🇺🇸 АКШ','💰 Окуу баасы','🌍 Агенттиктер'],
-    queries: ['Программист болгум келет','Медицина кызыктырат','Европада окугум келет','АКШ университеттери','Окуу баасы жөнүндө','Чет элде окуу агенттиктери'],
+    chips: ["🎓 Бакалавриат", "📚 Магистратура", "🔬 Илим жана медицина", "💼 Бизнес жана экономика", "💻 IT жана инженерия", "🎨 Гуманитардык"],
+    queries: ["Бакалавриат программасын издеп жатам", "Магистратура программасын издеп жатам", "Илим же медицина кызыктырат", "Бизнес же экономика кызыктырат", "IT же инженерия кызыктырат", "Гуманитардык багыт кызыктырат"],
     welcome: (n,u) => `Салам! Бүгүн ${n} катышуучу, ${u} университет. Суроолоруңузду бериңиз!`
   },
   az: {
@@ -175,8 +172,8 @@ const i18n = {
     ph: 'İxtisaslar, qəbul, xərclər haqqında soruşun...', searching: 'axtarılır...',
     errReply: 'Cavab almaq mümkün olmadı.',
     standLbl: '📍 Tövsiyə olunan stend',
-    chips: ['💻 İT','🔬 Tibb','🇪🇺 Avropa','🇺🇸 ABŞ','💰 Təhsil xərcləri','🌍 Agentliklər'],
-    queries: ['Proqramçı olmaq istəyirəm','Tibb maraqlandırır','Avropada oxumaq istəyirəm','ABŞ universitetləri','Təhsil xərcləri haqqında','Xaricdə təhsil agentlikləri'],
+    chips: ["🎓 Bakalavr", "📚 Magistratura", "🔬 Elm və tibb", "💼 Biznes və iqtisadiyyat", "💻 İT və mühəndislik", "🎨 Humanitar"],
+    queries: ["Bakalavr proqramı axtarıram", "Magistratura proqramı axtarıram", "Elm və ya tibb maraqlandırır", "Biznes və ya iqtisadiyyat maraqlandırır", "İT və ya mühəndislik maraqlandırır", "Humanitar istiqamət maraqlandırır"],
     welcome: (n,u) => `Salam! Bu gün sərgi ${n} iştirakçı, ${u} universitet. Soruşun!`
   },
   ka: {
@@ -185,8 +182,8 @@ const i18n = {
     ph: 'სპეციალობები, მიღება, ღირებულება...', searching: 'ძიება...',
     errReply: 'პასუხის მიღება ვერ მოხერხდა.',
     standLbl: '📍 რეკომენდებული სტენდი',
-    chips: ['💻 IT','🔬 მედიცინა','🇪🇺 ევროპა','🇺🇸 აშშ','💰 სწავლის ღირებულება','🌍 სააგენტოები'],
-    queries: ['მინდა გავხდე პროგრამისტი','მედიცინა მაინტერესებს','ევროპაში სწავლა მინდა','აშშ-ის უნივერსიტეტები','სწავლის ღირებულება','სააგენტოები'],
+    chips: ["🎓 ბაკალავრიატი", "📚 მაგისტრატურა", "🔬 მეცნიერება და მედიცინა", "💼 ბიზნესი და ეკონომიკა", "💻 IT და ინჟინერია", "🎨 ჰუმანიტარული"],
+    queries: ["ვეძებ ბაკალავრის პროგრამას", "ვეძებ მაგისტრის პროგრამას", "მაინტერესებს მეცნიერება ან მედიცინა", "მაინტერესებს ბიზნესი ან ეკონომიკა", "მაინტერესებს IT ან ინჟინერია", "მაინტერესებს ჰუმანიტარული მიმართულება"],
     welcome: (n,u) => `გამარჯობა! გამოფენაზე ${n} მონაწილე, ${u} უნივერსიტეტი. კითხვები დასვით!`
   },
   ro: {
@@ -195,8 +192,8 @@ const i18n = {
     ph: 'Întrebați despre programe, admitere, costuri...', searching: 'se caută...',
     errReply: 'Nu s-a putut obține un răspuns.',
     standLbl: '📍 Stand recomandat',
-    chips: ['💻 IT','🔬 Medicină','🇪🇺 Europa','🇺🇸 SUA','💰 Costuri','🌍 Agenții'],
-    queries: ['Vreau să devin programator','Mă interesează medicina','Vreau să studiez în Europa','Universități din SUA','Despre costurile studiilor','Agenții de studii în străinătate'],
+    chips: ["🎓 Licență", "📚 Master", "🔬 Științe și medicină", "💼 Business și economie", "💻 IT și inginerie", "🎨 Umaniste"],
+    queries: ["Caut un program de licență", "Caut un program de master", "Mă interesează științele sau medicina", "Mă interesează business sau economia", "Mă interesează IT sau ingineria", "Mă interesează științele umaniste"],
     welcome: (n,u) => `Bună! Târgul de astăzi are ${n} participanți, inclusiv ${u} universități. Întrebați!`
   },
   id: {
@@ -205,8 +202,8 @@ const i18n = {
     ph: 'Tanyakan tentang program, penerimaan, biaya...', searching: 'mencari...',
     errReply: 'Tidak dapat memperoleh respons.',
     standLbl: '📍 Stand yang direkomendasikan',
-    chips: ['💻 IT','🔬 Kedokteran','🇪🇺 Eropa','🇺🇸 Amerika','💰 Biaya kuliah','🌍 Agen studi'],
-    queries: ['Saya ingin jadi programmer','Saya tertarik kedokteran','Ingin kuliah di Eropa','Universitas dari Amerika','Tentang biaya kuliah','Agen studi ke luar negeri'],
+    chips: ["🎓 Sarjana (S1)", "📚 Magister (S2)", "🔬 Sains & Kedokteran", "💼 Bisnis & Ekonomi", "💻 IT & Teknik", "🎨 Humaniora"],
+    queries: ["Saya mencari program sarjana", "Saya mencari program magister", "Saya tertarik sains atau kedokteran", "Saya tertarik bisnis atau ekonomi", "Saya tertarik IT atau teknik", "Saya tertarik humaniora"],
     welcome: (n,u) => `Halo! Pameran hari ini memiliki ${n} peserta, termasuk ${u} universitas. Silakan bertanya!`
   },
   ar: {
@@ -215,8 +212,8 @@ const i18n = {
     ph: 'اسأل عن البرامج والقبول والتكاليف...', searching: 'جار البحث...',
     errReply: 'تعذر الحصول على رد.',
     standLbl: '📍 الجناح الموصى به',
-    chips: ['💻 تكنولوجيا المعلومات','🔬 الطب','🇪🇺 أوروبا','🇺🇸 أمريكا','💰 تكاليف الدراسة','🌍 وكالات الدراسة'],
-    queries: ['أريد أن أصبح مبرمجاً','أنا مهتم بالطب','أريد الدراسة في أوروبا','جامعات من أمريكا','عن تكاليف الدراسة','وكالات الدراسة في الخارج'],
+    chips: ["🎓 البكالوريوس", "📚 الماجستير", "🔬 العلوم والطب", "💼 الأعمال والاقتصاد", "💻 تكنولوجيا المعلومات والهندسة", "🎨 العلوم الإنسانية"],
+    queries: ["أبحث عن برنامج بكالوريوس", "أبحث عن برنامج ماجستير", "أنا مهتم بالعلوم أو الطب", "أنا مهتم بالأعمال أو الاقتصاد", "أنا مهتم بتكنولوجيا المعلومات أو الهندسة", "أنا مهتم بالعلوم الإنسانية"],
     welcome: (n,u) => `مرحباً! يضم المعرض اليوم ${n} مشاركاً، منهم ${u} جامعة. اسأل أي سؤال!`
   },
   vi: {
@@ -225,8 +222,8 @@ const i18n = {
     ph: 'Hỏi về chương trình, tuyển sinh, học phí...', searching: 'đang tìm kiếm...',
     errReply: 'Không thể nhận được phản hồi.',
     standLbl: '📍 Gian hàng được đề xuất',
-    chips: ['💻 CNTT','🔬 Y khoa','🇪🇺 Châu Âu','🇺🇸 Mỹ','💰 Học phí','🌍 Đại lý du học'],
-    queries: ['Tôi muốn trở thành lập trình viên','Tôi quan tâm đến y khoa','Tôi muốn học ở Châu Âu','Các trường đại học từ Mỹ','Về học phí','Các đại lý du học'],
+    chips: ["🎓 Đại học", "📚 Thạc sĩ", "🔬 Khoa học & Y khoa", "💼 Kinh doanh & Kinh tế", "💻 IT & Kỹ thuật", "🎨 Nhân văn"],
+    queries: ["Tôi tìm chương trình đại học", "Tôi tìm chương trình thạc sĩ", "Tôi quan tâm khoa học hoặc y khoa", "Tôi quan tâm kinh doanh hoặc kinh tế", "Tôi quan tâm IT hoặc kỹ thuật", "Tôi quan tâm nhân văn"],
     welcome: (n,u) => `Xin chào! Hội chợ hôm nay có ${n} người tham gia, gồm ${u} trường đại học. Hãy đặt câu hỏi!`
   },
   hi: {
@@ -235,8 +232,8 @@ const i18n = {
     ph: 'कार्यक्रम, प्रवेश, खर्च के बारे में पूछें...', searching: 'खोज रहे हैं...',
     errReply: 'उत्तर प्राप्त नहीं हो सका।',
     standLbl: '📍 अनुशंसित स्टॉल',
-    chips: ['💻 IT','🔬 चिकित्सा','🇪🇺 यूरोप','🇺🇸 अमेरिका','💰 शिक्षा शुल्क','🌍 एजेंसियां'],
-    queries: ['मैं प्रोग्रामर बनना चाहता हूं','मुझे चिकित्सा में रुचि है','मैं यूरोप में पढ़ना चाहता हूं','अमेरिका के विश्वविद्यालय','शिक्षा शुल्क के बारे में','विदेश अध्ययन एजेंसियां'],
+    chips: ["🎓 स्नातक", "📚 स्नातकोत्तर", "🔬 विज्ञान और चिकित्सा", "💼 व्यापार और अर्थशास्त्र", "💻 IT और इंजीनियरिंग", "🎨 मानविकी"],
+    queries: ["मैं स्नातक कार्यक्रम खोज रहा हूं", "मैं स्नातकोत्तर कार्यक्रम खोज रहा हूं", "मुझे विज्ञान या चिकित्सा में रुचि है", "मुझे व्यापार या अर्थशास्त्र में रुचि है", "मुझे IT या इंजीनियरिंग में रुचि है", "मुझे मानविकी में रुचि है"],
     welcome: (n,u) => `नमस्ते! आज के मेले में ${n} प्रतिभागी हैं, जिनमें ${u} विश्वविद्यालय हैं। पूछें!`
   },
   de: {
@@ -245,8 +242,8 @@ const i18n = {
     ph: 'Fragen zu Studiengängen, Zulassung, Kosten...', searching: 'suche...',
     errReply: 'Antwort konnte nicht abgerufen werden.',
     standLbl: '📍 Empfohlener Stand',
-    chips: ['💻 IT','🔬 Medizin','🇪🇺 Europa','🇺🇸 USA','💰 Studienkosten','🌍 Agenturen'],
-    queries: ['Ich möchte Programmierer werden','Ich interessiere mich für Medizin','Ich möchte in Europa studieren','Universitäten aus den USA','Über Studienkosten','Auslandsstudium-Agenturen'],
+    chips: ["🎓 Bachelor", "📚 Master", "🔬 Naturwissenschaften & Medizin", "💼 Wirtschaft & BWL", "💻 IT & Ingenieurwesen", "🎨 Geisteswissenschaften"],
+    queries: ["Ich suche ein Bachelorprogramm", "Ich suche ein Masterprogramm", "Ich interessiere mich für Naturwissenschaften oder Medizin", "Ich interessiere mich für Wirtschaft", "Ich interessiere mich für IT oder Ingenieurwesen", "Ich interessiere mich für Geisteswissenschaften"],
     welcome: (n,u) => `Hallo! Die heutige Messe hat ${n} Teilnehmer, darunter ${u} Universitäten. Fragen Sie!`
   },
   it: {
@@ -255,8 +252,8 @@ const i18n = {
     ph: 'Chiedi di programmi, ammissione, costi...', searching: 'ricerca in corso...',
     errReply: 'Impossibile ottenere una risposta.',
     standLbl: '📍 Stand consigliato',
-    chips: ['💻 Informatica','🔬 Medicina','🇪🇺 Europa','🇺🇸 USA','💰 Costi','🌍 Agenzie'],
-    queries: ['Voglio diventare programmatore','Mi interessa la medicina','Voglio studiare in Europa','Università dagli USA','Sui costi degli studi','Agenzie per studi all\'estero'],
+    chips: ["🎓 Triennale", "📚 Magistrale", "🔬 Scienze e medicina", "💼 Economia e business", "💻 IT e ingegneria", "🎨 Umanistiche"],
+    queries: ["Cerco un corso triennale", "Cerco un corso magistrale", "Mi interessano le scienze o la medicina", "Mi interessa l'economia o il business", "Mi interessa l'informatica o l'ingegneria", "Mi interessano le discipline umanistiche"],
     welcome: (n,u) => `Ciao! La fiera di oggi ha ${n} partecipanti, tra cui ${u} università. Chiedi pure!`
   }
 };
@@ -285,7 +282,7 @@ function applyLanguage(lang) {
   if (!i18n[lang]) lang = 'en';
   detectedLang = lang;
   document.getElementById('header-sub').textContent = t().sub;
-  document.getElementById('expo-label').textContent = t().label;
+  
   const inp = document.getElementById('input');
   if (inp) inp.placeholder = t().ph;
 }
@@ -326,21 +323,11 @@ async function loadParticipants() {
     showWelcome();
   } catch(e) {
     document.getElementById('expo-meta').textContent = t().err;
-    document.getElementById('stands-list').innerHTML = `<div class="loading-tag">${t().err}</div>`;
+    
   }
 }
 
-function renderExpoBar() {
-  document.getElementById('expo-meta').textContent =
-    `📅 ${expoInfo.date} · ⏰ ${expoInfo.time} · 📍 ${expoInfo.place}`;
-  const list = document.getElementById('stands-list');
-  list.innerHTML = '';
-  participants.forEach(p => {
-    const tag = document.createElement('div');
-    tag.className = 'stand-tag';
-    tag.innerHTML = `<span class="stand-dot"></span>${p.name}`;
-    list.appendChild(tag);
-  });
+);
 }
 
 function enableChat() {
