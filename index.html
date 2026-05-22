@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0F6E56">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>UniGuide — Ассистент выставки</title>
+<title>UniGuide — Education Fair Assistant</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,23 +85,23 @@
       <div class="logo"><i class="ti ti-building-community"></i></div>
       <div>
         <div class="header-title">UniGuide</div>
-        <div class="header-sub">Ассистент образовательной выставки</div>
+        <div class="header-sub" id="header-sub">Education Fair Assistant</div>
       </div>
     </div>
   </div>
   <div class="expo-bar">
-    <div class="expo-meta" id="expo-meta">Загрузка данных выставки...</div>
-    <div class="expo-label">Участники</div>
+    <div class="expo-meta" id="expo-meta">Loading fair data...</div>
+    <div class="expo-label" id="expo-label">PARTICIPANTS</div>
     <div class="stands-scroll" id="stands-list">
-      <div class="loading-tag">загрузка...</div>
+      <div class="loading-tag">loading...</div>
     </div>
   </div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
     <div class="input-wrap">
-      <textarea id="input" rows="1" placeholder="Спросите о специальностях, поступлении..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
+      <textarea id="input" rows="1" placeholder="Ask about programmes, admission, costs..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
-    <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Отправить" disabled>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Send" disabled>
       <i class="ti ti-arrow-up"></i>
     </button>
   </div>
@@ -113,26 +113,195 @@ const API_KEY = "REPLACE_WITH_YOUR_API_KEY";
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSna_RrRUCMLh8p7mMRK4JBEcjJJ8MvO-aGEJ_lkWZJ_Y9Feo1zEtq986_Qk831bW5gTCIEOqFGQzBR/pub?gid=0&single=true&output=csv";
 // ======================================================
 
-let participants = [];
-let expoInfo = {};
-let conversation = [];
-let isBusy = false;
+let participants = [], expoInfo = {}, conversation = [];
+let isBusy = false, detectedLang = 'en';
+const browserLang = (navigator.language || 'en').toLowerCase().split('-')[0];
 
-// Parse CSV
+const i18n = {
+  en: {
+    sub: 'Education Fair Assistant', label: 'PARTICIPANTS',
+    loading: 'Loading fair data...', tag: 'loading...', err: 'Could not load fair data',
+    ph: 'Ask about programmes, admission, costs...', searching: 'searching...',
+    errReply: 'Could not get a response. Please check your internet connection.',
+    standLbl: '📍 Recommended stand',
+    chips: ['💻 IT & Computer Science','🔬 Medicine','🇪🇺 Europe','🇺🇸 USA & Canada','💰 Tuition costs','🌍 Study abroad agencies'],
+    queries: ['I want to become a programmer — where to apply?','I am interested in medicine','I want to study in Europe','Which universities from USA or Canada are here?','Tell me about tuition costs','Which study abroad agencies are here?'],
+    welcome: (n,u) => `Hello! Today's fair has ${n} participants, including ${u} universities from different countries. Ask me anything!`
+  },
+  ru: {
+    sub: 'Ассистент образовательной выставки', label: 'УЧАСТНИКИ',
+    loading: 'Загрузка данных...', tag: 'загрузка...', err: 'Не удалось загрузить данные',
+    ph: 'Спросите о специальностях, поступлении, стоимости...', searching: 'ищу информацию...',
+    errReply: 'Не удалось получить ответ. Проверьте подключение к интернету.',
+    standLbl: '📍 Рекомендуемый стенд',
+    chips: ['💻 IT и программирование','🔬 Медицина','🇪🇺 Европа','🇺🇸 США и Канада','💰 Стоимость обучения','🌍 Агентства'],
+    queries: ['Хочу стать программистом — куда поступить?','Интересует медицина','Хочу учиться в Европе','Какие университеты из США или Канады?','Расскажите о стоимости обучения','Какие агентства по поступлению за рубеж?'],
+    welcome: (n,u) => `Привет! На выставке ${n} участников, из них ${u} университетов. Спрашивайте!`
+  },
+  kk: {
+    sub: 'Білім көрмесінің көмекшісі', label: 'ҚАТЫСУШЫЛАР',
+    loading: 'Деректер жүктелуде...', tag: 'жүктелуде...', err: 'Деректерді жүктеу мүмкін болмады',
+    ph: 'Мамандықтар, қабылдау туралы сұраңыз...', searching: 'іздеуде...',
+    errReply: 'Жауап алу мүмкін болмады.',
+    standLbl: '📍 Ұсынылатын стенд',
+    chips: ['💻 IT','🔬 Медицина','🇪🇺 Еуропа','🇺🇸 АҚШ','💰 Оқу құны','🌍 Агенттіктер'],
+    queries: ['Бағдарламашы болғым келеді','Медицина қызықтырады','Еуропада оқығым келеді','АҚШ университеттері','Оқу құны туралы','Шетелде оқу агенттіктері'],
+    welcome: (n,u) => `Сәлем! Бүгін ${n} қатысушы, ${u} университет. Сұраңыз!`
+  },
+  uz: {
+    sub: 'Ta\'lim yarmarkasi yordamchisi', label: 'ISHTIROKCHILAR',
+    loading: 'Ma\'lumotlar yuklanmoqda...', tag: 'yuklanmoqda...', err: 'Ma\'lumotlarni yuklab bo\'lmadi',
+    ph: 'Mutaxassisliklar, qabul, narxlar haqida so\'rang...', searching: 'qidirmoqda...',
+    errReply: 'Javob olishning imkoni bo\'lmadi.',
+    standLbl: '📍 Tavsiya etilgan stend',
+    chips: ['💻 IT','🔬 Tibbiyot','🇪🇺 Yevropa','🇺🇸 AQSh','💰 O\'qish narxi','🌍 Agentliklar'],
+    queries: ['Dasturchi bo\'lmoqchiman','Tibbiyot qiziqtiradi','Yevropada o\'qimoqchiman','AQSh universitetlari','O\'qish narxi haqida','Chet elda o\'qish agentliklari'],
+    welcome: (n,u) => `Salom! Bugungi yarmarkada ${n} ishtirokchi, shulardan ${u} ta universitet. Savol bering!`
+  },
+  ky: {
+    sub: 'Билим кѳргѳзмѳсүнүн жардамчысы', label: 'КАТЫШУУЧУЛАР',
+    loading: 'Маалыматтар жүктѳлүүдѳ...', tag: 'жүктѳлүүдѳ...', err: 'Маалыматтарды жүктѳѳ мүмкүн болгон жок',
+    ph: 'Адистиктер, кабыл алуу жөнүндө сураңыз...', searching: 'издеп жатат...',
+    errReply: 'Жооп алуу мүмкүн болгон жок.',
+    standLbl: '📍 Сунушталган стенд',
+    chips: ['💻 IT','🔬 Медицина','🇪🇺 Европа','🇺🇸 АКШ','💰 Окуу баасы','🌍 Агенттиктер'],
+    queries: ['Программист болгум келет','Медицина кызыктырат','Европада окугум келет','АКШ университеттери','Окуу баасы жөнүндө','Чет элде окуу агенттиктери'],
+    welcome: (n,u) => `Салам! Бүгүн ${n} катышуучу, ${u} университет. Суроолоруңузду бериңиз!`
+  },
+  az: {
+    sub: 'Təhsil sərgisi assistenti', label: 'İŞTİRAKÇILAR',
+    loading: 'Məlumatlar yüklənir...', tag: 'yüklənir...', err: 'Məlumatları yükləmək mümkün olmadı',
+    ph: 'İxtisaslar, qəbul, xərclər haqqında soruşun...', searching: 'axtarılır...',
+    errReply: 'Cavab almaq mümkün olmadı.',
+    standLbl: '📍 Tövsiyə olunan stend',
+    chips: ['💻 İT','🔬 Tibb','🇪🇺 Avropa','🇺🇸 ABŞ','💰 Təhsil xərcləri','🌍 Agentliklər'],
+    queries: ['Proqramçı olmaq istəyirəm','Tibb maraqlandırır','Avropada oxumaq istəyirəm','ABŞ universitetləri','Təhsil xərcləri haqqında','Xaricdə təhsil agentlikləri'],
+    welcome: (n,u) => `Salam! Bu gün sərgi ${n} iştirakçı, ${u} universitet. Soruşun!`
+  },
+  ka: {
+    sub: 'საგანმანათლებლო გამოფენის ასისტენტი', label: 'მონაწილეები',
+    loading: 'მონაცემები იტვირთება...', tag: 'იტვირთება...', err: 'მონაცემების ჩატვირთვა ვერ მოხერხდა',
+    ph: 'სპეციალობები, მიღება, ღირებულება...', searching: 'ძიება...',
+    errReply: 'პასუხის მიღება ვერ მოხერხდა.',
+    standLbl: '📍 რეკომენდებული სტენდი',
+    chips: ['💻 IT','🔬 მედიცინა','🇪🇺 ევროპა','🇺🇸 აშშ','💰 სწავლის ღირებულება','🌍 სააგენტოები'],
+    queries: ['მინდა გავხდე პროგრამისტი','მედიცინა მაინტერესებს','ევროპაში სწავლა მინდა','აშშ-ის უნივერსიტეტები','სწავლის ღირებულება','სააგენტოები'],
+    welcome: (n,u) => `გამარჯობა! გამოფენაზე ${n} მონაწილე, ${u} უნივერსიტეტი. კითხვები დასვით!`
+  },
+  ro: {
+    sub: 'Asistentul târgului educațional', label: 'PARTICIPANȚI',
+    loading: 'Se încarcă datele...', tag: 'se încarcă...', err: 'Nu s-au putut încărca datele',
+    ph: 'Întrebați despre programe, admitere, costuri...', searching: 'se caută...',
+    errReply: 'Nu s-a putut obține un răspuns.',
+    standLbl: '📍 Stand recomandat',
+    chips: ['💻 IT','🔬 Medicină','🇪🇺 Europa','🇺🇸 SUA','💰 Costuri','🌍 Agenții'],
+    queries: ['Vreau să devin programator','Mă interesează medicina','Vreau să studiez în Europa','Universități din SUA','Despre costurile studiilor','Agenții de studii în străinătate'],
+    welcome: (n,u) => `Bună! Târgul de astăzi are ${n} participanți, inclusiv ${u} universități. Întrebați!`
+  },
+  id: {
+    sub: 'Asisten Pameran Pendidikan', label: 'PESERTA',
+    loading: 'Memuat data...', tag: 'memuat...', err: 'Gagal memuat data',
+    ph: 'Tanyakan tentang program, penerimaan, biaya...', searching: 'mencari...',
+    errReply: 'Tidak dapat memperoleh respons.',
+    standLbl: '📍 Stand yang direkomendasikan',
+    chips: ['💻 IT','🔬 Kedokteran','🇪🇺 Eropa','🇺🇸 Amerika','💰 Biaya kuliah','🌍 Agen studi'],
+    queries: ['Saya ingin jadi programmer','Saya tertarik kedokteran','Ingin kuliah di Eropa','Universitas dari Amerika','Tentang biaya kuliah','Agen studi ke luar negeri'],
+    welcome: (n,u) => `Halo! Pameran hari ini memiliki ${n} peserta, termasuk ${u} universitas. Silakan bertanya!`
+  },
+  ar: {
+    sub: 'مساعد معرض التعليم', label: 'المشاركون',
+    loading: 'جار تحميل البيانات...', tag: 'جار التحميل...', err: 'تعذر تحميل البيانات',
+    ph: 'اسأل عن البرامج والقبول والتكاليف...', searching: 'جار البحث...',
+    errReply: 'تعذر الحصول على رد.',
+    standLbl: '📍 الجناح الموصى به',
+    chips: ['💻 تكنولوجيا المعلومات','🔬 الطب','🇪🇺 أوروبا','🇺🇸 أمريكا','💰 تكاليف الدراسة','🌍 وكالات الدراسة'],
+    queries: ['أريد أن أصبح مبرمجاً','أنا مهتم بالطب','أريد الدراسة في أوروبا','جامعات من أمريكا','عن تكاليف الدراسة','وكالات الدراسة في الخارج'],
+    welcome: (n,u) => `مرحباً! يضم المعرض اليوم ${n} مشاركاً، منهم ${u} جامعة. اسأل أي سؤال!`
+  },
+  vi: {
+    sub: 'Trợ lý Hội chợ Giáo dục', label: 'NGƯỜI THAM GIA',
+    loading: 'Đang tải dữ liệu...', tag: 'đang tải...', err: 'Không thể tải dữ liệu',
+    ph: 'Hỏi về chương trình, tuyển sinh, học phí...', searching: 'đang tìm kiếm...',
+    errReply: 'Không thể nhận được phản hồi.',
+    standLbl: '📍 Gian hàng được đề xuất',
+    chips: ['💻 CNTT','🔬 Y khoa','🇪🇺 Châu Âu','🇺🇸 Mỹ','💰 Học phí','🌍 Đại lý du học'],
+    queries: ['Tôi muốn trở thành lập trình viên','Tôi quan tâm đến y khoa','Tôi muốn học ở Châu Âu','Các trường đại học từ Mỹ','Về học phí','Các đại lý du học'],
+    welcome: (n,u) => `Xin chào! Hội chợ hôm nay có ${n} người tham gia, gồm ${u} trường đại học. Hãy đặt câu hỏi!`
+  },
+  hi: {
+    sub: 'शिक्षा मेले का सहायक', label: 'प्रतिभागी',
+    loading: 'डेटा लोड हो रहा है...', tag: 'लोड हो रहा है...', err: 'डेटा लोड नहीं हो सका',
+    ph: 'कार्यक्रम, प्रवेश, खर्च के बारे में पूछें...', searching: 'खोज रहे हैं...',
+    errReply: 'उत्तर प्राप्त नहीं हो सका।',
+    standLbl: '📍 अनुशंसित स्टॉल',
+    chips: ['💻 IT','🔬 चिकित्सा','🇪🇺 यूरोप','🇺🇸 अमेरिका','💰 शिक्षा शुल्क','🌍 एजेंसियां'],
+    queries: ['मैं प्रोग्रामर बनना चाहता हूं','मुझे चिकित्सा में रुचि है','मैं यूरोप में पढ़ना चाहता हूं','अमेरिका के विश्वविद्यालय','शिक्षा शुल्क के बारे में','विदेश अध्ययन एजेंसियां'],
+    welcome: (n,u) => `नमस्ते! आज के मेले में ${n} प्रतिभागी हैं, जिनमें ${u} विश्वविद्यालय हैं। पूछें!`
+  },
+  de: {
+    sub: 'Assistent der Bildungsmesse', label: 'TEILNEHMER',
+    loading: 'Daten werden geladen...', tag: 'wird geladen...', err: 'Daten konnten nicht geladen werden',
+    ph: 'Fragen zu Studiengängen, Zulassung, Kosten...', searching: 'suche...',
+    errReply: 'Antwort konnte nicht abgerufen werden.',
+    standLbl: '📍 Empfohlener Stand',
+    chips: ['💻 IT','🔬 Medizin','🇪🇺 Europa','🇺🇸 USA','💰 Studienkosten','🌍 Agenturen'],
+    queries: ['Ich möchte Programmierer werden','Ich interessiere mich für Medizin','Ich möchte in Europa studieren','Universitäten aus den USA','Über Studienkosten','Auslandsstudium-Agenturen'],
+    welcome: (n,u) => `Hallo! Die heutige Messe hat ${n} Teilnehmer, darunter ${u} Universitäten. Fragen Sie!`
+  },
+  it: {
+    sub: 'Assistente della Fiera dell\'Istruzione', label: 'PARTECIPANTI',
+    loading: 'Caricamento dati...', tag: 'caricamento...', err: 'Impossibile caricare i dati',
+    ph: 'Chiedi di programmi, ammissione, costi...', searching: 'ricerca in corso...',
+    errReply: 'Impossibile ottenere una risposta.',
+    standLbl: '📍 Stand consigliato',
+    chips: ['💻 Informatica','🔬 Medicina','🇪🇺 Europa','🇺🇸 USA','💰 Costi','🌍 Agenzie'],
+    queries: ['Voglio diventare programmatore','Mi interessa la medicina','Voglio studiare in Europa','Università dagli USA','Sui costi degli studi','Agenzie per studi all\'estero'],
+    welcome: (n,u) => `Ciao! La fiera di oggi ha ${n} partecipanti, tra cui ${u} università. Chiedi pure!`
+  }
+};
+
+// Script-based language detection for non-Latin scripts
+const scriptDetectors = [
+  { lang: 'ru', re: /[а-яёА-ЯЁ]/, threshold: 3 },
+  { lang: 'kk', re: /[әіңғүұқөһӘІҢҒҮҰҚӨҺ]/, threshold: 1 },
+  { lang: 'ky', re: /[өүңӊ]/, threshold: 1 },
+  { lang: 'ka', re: /[\u10D0-\u10FF]/, threshold: 1 },
+  { lang: 'ar', re: /[\u0600-\u06FF]/, threshold: 2 },
+  { lang: 'hi', re: /[\u0900-\u097F]/, threshold: 2 },
+  { lang: 'vi', re: /[àáâãèéêìíòóôõùúýăđơư]/i, threshold: 2 },
+];
+
+function detectLangFromText(text) {
+  for (const d of scriptDetectors) {
+    if ((text.match(d.re) || []).length >= d.threshold) return d.lang;
+  }
+  return null; // Latin — keep current or use browser lang
+}
+
+function t() { return i18n[detectedLang] || i18n.en; }
+
+function applyLanguage(lang) {
+  if (!i18n[lang]) lang = 'en';
+  detectedLang = lang;
+  document.getElementById('header-sub').textContent = t().sub;
+  document.getElementById('expo-label').textContent = t().label;
+  const inp = document.getElementById('input');
+  if (inp) inp.placeholder = t().ph;
+}
+
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
   return lines.slice(1).map(line => {
-    const values = [];
-    let cur = '', inQ = false;
+    const vals = []; let cur = '', inQ = false;
     for (let ch of line) {
       if (ch === '"') inQ = !inQ;
-      else if (ch === ',' && !inQ) { values.push(cur.trim()); cur = ''; }
+      else if (ch === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
       else cur += ch;
     }
-    values.push(cur.trim());
+    vals.push(cur.trim());
     const obj = {};
-    headers.forEach((h, i) => obj[h] = (values[i] || '').replace(/^"|"$/g, ''));
+    headers.forEach((h,i) => obj[h] = (vals[i]||'').replace(/^"|"$/g,''));
     return obj;
   });
 }
@@ -142,39 +311,27 @@ async function loadParticipants() {
     const resp = await fetch(CSV_URL);
     const text = await resp.text();
     const rows = parseCSV(text);
-
     participants = rows.map(r => ({
-      type: r['Type'] || '',
-      name: r['Name'] || '',
-      country: r['Country'] || '',
-      date: r['Date'] || '',
-      place: r['Place'] || '',
-      time: r['Time'] || '',
-      stand: r['Stand'] || ''
+      type: r['Type']||'', name: r['Name']||'', country: r['Country']||'',
+      date: r['Date']||'', place: r['Place']||'', time: r['Time']||'', stand: r['Stand']||''
     })).filter(p => p.name);
-
-    // Extract expo info from first row
     if (participants.length > 0) {
-      expoInfo = {
-        date: participants[0].date,
-        place: participants[0].place.trim(),
-        time: participants[0].time
-      };
+      expoInfo = { date: participants[0].date, place: participants[0].place.trim(), time: participants[0].time };
     }
-
+    const initLang = i18n[browserLang] ? browserLang : 'en';
+    applyLanguage(initLang);
     renderExpoBar();
     enableChat();
     showWelcome();
-  } catch (e) {
-    document.getElementById('expo-meta').textContent = 'Не удалось загрузить данные выставки';
-    document.getElementById('stands-list').innerHTML = '<div class="loading-tag">ошибка загрузки</div>';
+  } catch(e) {
+    document.getElementById('expo-meta').textContent = t().err;
+    document.getElementById('stands-list').innerHTML = `<div class="loading-tag">${t().err}</div>`;
   }
 }
 
 function renderExpoBar() {
   document.getElementById('expo-meta').textContent =
     `📅 ${expoInfo.date} · ⏰ ${expoInfo.time} · 📍 ${expoInfo.place}`;
-
   const list = document.getElementById('stands-list');
   list.innerHTML = '';
   participants.forEach(p => {
@@ -192,15 +349,11 @@ function enableChat() {
 
 function showWelcome() {
   const uniCount = participants.filter(p => p.type === 'Universities').length;
-  addMessage('bot', `Привет! На выставке сегодня ${participants.length} участников, из них ${uniCount} университетов из разных стран. Помогу найти подходящий вариант — спрашивайте!
-    <div class="chips">
-      <div class="chip" onclick="quickAsk('Хочу стать программистом — куда поступить?')">💻 IT и программирование</div>
-      <div class="chip" onclick="quickAsk('Интересует медицина')">🔬 Медицина</div>
-      <div class="chip" onclick="quickAsk('Хочу учиться в Европе')">🇪🇺 Европа</div>
-      <div class="chip" onclick="quickAsk('Какие университеты из США?')">🇺🇸 США</div>
-      <div class="chip" onclick="quickAsk('Расскажите о стоимости обучения')">💰 Стоимость</div>
-      <div class="chip" onclick="quickAsk('Какие агентства по поступлению за рубеж?')">🌍 Агентства</div>
-    </div>`);
+  const l = t();
+  const chipsHtml = l.chips.map((c,i) =>
+    `<div class="chip" onclick="quickAsk('${l.queries[i].replace(/'/g,"\\'")}')">${c}</div>`
+  ).join('');
+  addMessage('bot', `${l.welcome(participants.length, uniCount)}<div class="chips">${chipsHtml}</div>`);
 }
 
 function addMessage(role, html, standInfo) {
@@ -216,14 +369,12 @@ function addMessage(role, html, standInfo) {
   if (standInfo) {
     const card = document.createElement('div');
     card.className = 'stand-card';
-    card.innerHTML = `
-      <div class="stand-card-label">📍 рекомендуемый стенд</div>
+    card.innerHTML = `<div class="stand-card-label">${t().standLbl}</div>
       <div class="stand-card-name">${standInfo.name}</div>
-      <div class="stand-card-meta">${standInfo.country ? standInfo.country + ' · ' : ''}Стенд ${standInfo.stand}</div>`;
+      <div class="stand-card-meta">${standInfo.country ? standInfo.country + ' · ' : ''}Stand ${standInfo.stand}</div>`;
     bubble.appendChild(card);
   }
-  wrap.appendChild(av);
-  wrap.appendChild(bubble);
+  wrap.appendChild(av); wrap.appendChild(bubble);
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -231,106 +382,97 @@ function addMessage(role, html, standInfo) {
 function addLoadingMsg() {
   const msgs = document.getElementById('messages');
   const wrap = document.createElement('div');
-  wrap.className = 'msg bot';
-  wrap.id = 'loading-msg';
-  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div><span>ищу информацию...</span></div>`;
+  wrap.className = 'msg bot'; wrap.id = 'loading-msg';
+  wrap.innerHTML = `<div class="av bot">🤖</div><div class="loading-bubble"><div class="dot-anim"><span></span><span></span><span></span></div><span>${t().searching}</span></div>`;
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
 }
-function removeLoadingMsg() {
-  const el = document.getElementById('loading-msg');
-  if (el) el.remove();
-}
+function removeLoadingMsg() { const el = document.getElementById('loading-msg'); if(el) el.remove(); }
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+function quickAsk(text) { document.getElementById('input').value=text; sendMessage(); }
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
-}
-function quickAsk(text) {
-  document.getElementById('input').value = text;
-  sendMessage();
-}
+const langNames = {
+  en:'English',ru:'Russian',kk:'Kazakh',uz:'Uzbek',ky:'Kyrgyz',
+  az:'Azerbaijani',ka:'Georgian',ro:'Romanian',id:'Indonesian',
+  ar:'Arabic',vi:'Vietnamese',hi:'Hindi',de:'German',it:'Italian'
+};
 
 async function sendMessage() {
-  if (isBusy || participants.length === 0) return;
+  if (isBusy || !participants.length) return;
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
-  input.value = '';
-  input.style.height = 'auto';
+
+  // Auto-detect language from user input
+  const detected = detectLangFromText(text);
+  if (detected && detected !== detectedLang) applyLanguage(detected);
+
+  input.value = ''; input.style.height = 'auto';
   addMessage('user', text);
-  conversation.push({ role: 'user', content: text });
+  conversation.push({ role:'user', content:text });
   isBusy = true;
   document.getElementById('send-btn').disabled = true;
   addLoadingMsg();
 
-  const participantList = participants.map((p, i) =>
-    `${i+1}. [${p.type}] ${p.name}${p.country ? ' (' + p.country + ')' : ''} — Стенд ${p.stand}`
+  const participantList = participants.map((p,i) =>
+    `${i+1}. [${p.type}] ${p.name}${p.country?' ('+p.country+')':''} — Stand ${p.stand}`
   ).join('\n');
 
-  const systemPrompt = `Ты — дружелюбный ассистент-навигатор на образовательной выставке.
+  const replyLang = langNames[detectedLang] || 'English';
 
-ВЫСТАВКА: ${expoInfo.place}
-ДАТА: ${expoInfo.date}, ${expoInfo.time}
+  const systemPrompt = `You are a friendly assistant-navigator at an international education fair.
 
-УЧАСТНИКИ ВЫСТАВКИ (рекомендуй ТОЛЬКО их):
+FAIR: ${expoInfo.place}
+DATE: ${expoInfo.date}, ${expoInfo.time}
+
+PARTICIPANTS (recommend ONLY these):
 ${participantList}
 
-Правила:
-1. Отвечай кратко и по делу (2-4 предложения)
-2. Если нужна свежая информация об университете — используй веб-поиск
-3. Учитывай тип участника: Universities, Study Abroad Agencies, Private Schools, Language Tests, Internship Agency
-4. В конце ВСЕГДА добавляй маркер: <<<STAND:{"index":N}>>> где N — номер участника из списка выше (1-${participants.length}), или 0 если не можешь определить
+Rules:
+1. ALWAYS reply in ${replyLang}.
+2. Give a short helpful answer (2-4 sentences).
+3. Use web search if you need fresh info about a university.
+4. Consider participant types: Universities, Study Abroad Agencies, Private Schools, Language Tests, Internship Agency.
+5. Always end with: <<<STAND:{"index":N}>>> where N = participant number (1-${participants.length}), or 0 if unclear.
 
-Стиль: тёплый, на «вы», без канцелярита.`;
+Tone: warm, friendly, no bureaucratic language.`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
         'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
+        model:'claude-sonnet-4-5',
+        max_tokens:1000,
         system: systemPrompt,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        tools:[{type:'web_search_20250305',name:'web_search'}],
         messages: conversation
       })
     });
     const data = await resp.json();
     let fullText = '';
-    if (data.content) {
-      for (const block of data.content) {
-        if (block.type === 'text') fullText += block.text;
-      }
-    }
+    if (data.content) for (const b of data.content) if (b.type==='text') fullText += b.text;
     removeLoadingMsg();
-    const standMatch = fullText.match(/<<<STAND:\{"index":(\d+)\}>>>/);
+    const m = fullText.match(/<<<STAND:\{"index":(\d+)\}>>>/);
     let standInfo = null;
-    if (standMatch) {
-      const idx = parseInt(standMatch[1]) - 1;
-      if (idx >= 0 && idx < participants.length) standInfo = participants[idx];
-    }
-    const display = fullText.replace(/<<<STAND:.*?>>>/g, '').trim().replace(/\n/g, '<br>');
+    if (m) { const idx=parseInt(m[1])-1; if(idx>=0&&idx<participants.length) standInfo=participants[idx]; }
+    const display = fullText.replace(/<<<STAND:.*?>>>/g,'').trim().replace(/\n/g,'<br>');
     addMessage('bot', display, standInfo);
-    conversation.push({ role: 'assistant', content: fullText });
-  } catch (err) {
+    conversation.push({ role:'assistant', content:fullText });
+  } catch(err) {
     removeLoadingMsg();
-    addMessage('bot', 'Не удалось получить ответ. Проверьте подключение к интернету.');
+    addMessage('bot', t().errReply);
   }
-
   isBusy = false;
   document.getElementById('send-btn').disabled = false;
 }
 
-// Start
 loadParticipants();
 </script>
 </body>
