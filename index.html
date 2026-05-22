@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>UniGuide — Education Fair Assistant</title>
 <link rel="icon" href="https://www.begingroup.com/local/templates/begin_group/favicon.ico">
-<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" crossorigin="anonymous">
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -101,7 +101,7 @@
       <textarea id="input" rows="1" placeholder="Ask about programmes, admission, costs..." onkeydown="handleKey(event)" oninput="autoResize(this)" disabled></textarea>
     </div>
     <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
-      <i class="ti ti-user"></i><span id="send-label">Send</span>
+      <span id="send-label">Send</span> →
     </button>
   </div>
 </div>
@@ -244,6 +244,7 @@ async function loadParticipants(){
 
 function renderMarkdown(text){
   return text
+    .replace(/\n/g,'<br>')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>');
 }
@@ -372,7 +373,7 @@ IMPORTANT TERMINOLOGY: In Russian always say "выставка" (not "ярмар
     const m=fullText.match(/<<<STAND:\{"index":(\d+)\}>>>/);
     let standInfo=null;
     if(m){const idx=parseInt(m[1])-1;if(idx>=0&&idx<participants.length)standInfo=participants[idx];}
-    const display=fullText.replace(/<<<STAND:.*?>>>/g,'').trim().replace(/\n/g,'<br>');
+    const display=fullText.replace(/<<<STAND:.*?>>>/g,'').trim();
     addMessage('bot',display,standInfo);
     // Store clean version without markers in conversation history
     const cleanForHistory=fullText.replace(/<<<STAND:.*?>>>/g,'').replace(/<<<OPTIONS:.*?>>>/gs,'').trim();
