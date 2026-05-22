@@ -116,12 +116,12 @@ const browserLang=(navigator.language||'en').toLowerCase().split('-')[0];
 const sendLabels={en:'Send',ru:'Отправить',kk:'Жіберу',uz:'Yuborish',ky:'Жөнөтүү',az:'Göndər',ka:'გაგზავნა',ro:'Trimite',id:'Kirim',ar:'إرسال',vi:'Gửi',hi:'भेजें',de:'Senden',it:'Invia'};
 
 const i18n={
-  en:{sub:'Education Fair Assistant',loading:'Loading fair data...',err:'Could not load data',ph:'Type or choose below...',searching:'searching...',errReply:'Could not get a response.',standLbl:'📍 Recommended stand',
+  en:{sub:'Education Fair Assistant',loading:'Loading fair data...',err:'Could not load data',ph:'Type your answer...',searching:'searching...',errReply:'Could not get a response.',standLbl:'📍 Recommended stand',
     chips:["🎓 Bachelor's degree","📚 Master's degree","🔬 Sciences & Medicine","💼 Business & Economics","💻 IT & Engineering","🎨 Arts & Humanities"],
     queries:["I'm looking for a Bachelor's programme","I'm looking for a Master's programme","I'm interested in sciences or medicine","I'm interested in business or economics","I'm interested in IT or engineering","I'm interested in arts or humanities"],
     firstOptions:["🎓 University", "📚 Language courses", "🏫 Private school", "🌍 Study abroad agency", "💼 Internship"],
     welcome:()=>`Hello! Tell me — are you looking for a university, a language course, a school, or maybe an agency to help with applications abroad?`},
-  ru:{sub:'Ассистент образовательной выставки',loading:'Загрузка данных...',err:'Не удалось загрузить данные',ph:'Напишите или выберите...',searching:'ищу информацию...',errReply:'Не удалось получить ответ.',standLbl:'📍 Рекомендуемый стенд',
+  ru:{sub:'Ассистент образовательной выставки',loading:'Загрузка данных...',err:'Не удалось загрузить данные',ph:'Напишите ответ...',searching:'ищу информацию...',errReply:'Не удалось получить ответ.',standLbl:'📍 Рекомендуемый стенд',
     chips:["🎓 Бакалавриат","📚 Магистратура","🔬 Науки и медицина","💼 Бизнес и экономика","💻 IT и инженерия","🎨 Гуманитарные науки"],
     queries:["Ищу программу бакалавриата","Ищу программу магистратуры","Интересуют науки или медицина","Интересует бизнес или экономика","Интересует IT или инженерия","Интересуют гуманитарные науки"],
     firstOptions:["🎓 Университет", "📚 Языковые курсы", "🏫 Частная школа", "🌍 Агентство по поступлению", "💼 Стажировка"],
@@ -370,13 +370,18 @@ ${participantList}
 
 HOW TO BEHAVE:
 - NEVER greet the visitor again — the greeting was already shown before the conversation started.
-- If you don't have enough information about the visitor yet, ask ONE focused question to learn more (interests, level of study, preferred country, budget, etc.). Ask naturally, like a real consultant — not as a numbered list.
-- Once you understand their needs, give a short concrete recommendation (2-4 sentences). Use **bold** for institution names.
-- Use web search only if you need specific up-to-date info about a particular university.
+- When you need more info: ask ONE short question AND always add clickable answer options using this format on a separate line: <<<OPTIONS:["Option A","Option B","Option C"]>>> — NEVER ask a question without options. 3-5 options per question.
+- When you have enough info: give a short recommendation (2-4 sentences), use **bold** for institution names. No OPTIONS needed.
+- Use web search only for specific up-to-date info about an institution.
 - ALWAYS reply in ${replyLang}.
-- End EVERY response with: <<<STAND:{"index":N}>>> where N = participant number (1-${participants.length}), or 0 if still gathering info.
+- End EVERY response on its own line with: <<<STAND:{"index":N}>>> (N = 1-${participants.length}, or 0 if still asking questions).
 
-Tone: warm, personal, like a knowledgeable friend — not a chatbot.
+Example of a question response:
+What level of study are you looking for?
+<<<OPTIONS:["Bachelor's degree","Master's degree","Language course","High school"]>>>
+<<<STAND:{"index":0}>>>
+
+Tone: warm, personal, like a knowledgeable friend.
 IMPORTANT TERMINOLOGY: In Russian always say "выставка" (not "ярмарка"). In Kazakh: "көрме". In Uzbek: "ko'rgazma". In Kyrgyz: "көргөзмө". In Azerbaijani: "sərgi". In Georgian: "გამოფენა".`;
 
   try{
